@@ -12,27 +12,59 @@
   ];
 
   const DIETS = {
-    vegetarian: ['meat', 'fish'],
-    vegan:      ['meat', 'fish', 'dairy', 'egg', 'honey'],
-    dairyFree:  ['dairy'],
-    glutenFree: ['gluten'],
+    vegetarian: ['meat', 'fish', 'shellfish'],
+    vegan:      ['meat', 'fish', 'shellfish', 'dairy', 'egg', 'honey'],
   };
+
+  const ALLERGENS = [
+    { key: 'gluten',    label: 'Gluten' },
+    { key: 'dairy',     label: 'Dairy' },
+    { key: 'egg',       label: 'Eggs' },
+    { key: 'fish',      label: 'Fish' },
+    { key: 'shellfish', label: 'Shellfish' },
+    { key: 'peanut',    label: 'Peanuts' },
+    { key: 'treenut',   label: 'Tree nuts' },
+    { key: 'soy',       label: 'Soy' },
+    { key: 'sesame',    label: 'Sesame' },
+  ];
 
   // Relative importance of hitting each target.
   const WEIGHTS = { kcal: 1.5, p: 1.3, c: 1, f: 1 };
   const KEYS = ['kcal', 'p', 'c', 'f'];
   const SCALE_MIN = 0.35;
   const SCALE_MAX = 3.5;
+  const HISTORY_MAX = 10;
+  // How much worse than the best-fitting recipe a candidate may be (in error
+  // units, roughly a few % off per macro) and still be picked.
+  const FIT_TOLERANCE = 0.01;
 
-  function blocked(prefs) {
-    const out = new Set();
-    Object.keys(DIETS).forEach((d) => { if (prefs[d]) DIETS[d].forEach((f) => out.add(f)); });
+  // Accepts the current shape or the original flat one ({ vegetarian, dairyFree, ... }).
+  function normalizePrefs(p) {
+    p = p || {};
+    if (Array.isArray(p.allergies)) {
+      return {
+        diet: { vegetarian: !!(p.diet && p.diet.vegetarian), vegan: !!(p.diet && p.diet.vegan) },
+        allergies: p.allergies.filter((a) => ALLERGENS.some((x) => x.key === a)),
+        likes: (p.likes || []).filter((f) => FOODS[f]),
+        dislikes: (p.dislikes || []).filter((f) => FOODS[f]),
+      };
+    }
+    const allergies = [];
+    if (p.dairyFree) allergies.push('dairy');
+    if (p.glutenFree) allergies.push('gluten');
+    return { diet: { vegetarian: !!p.vegetarian, vegan: !!p.vegan }, allergies, likes: [], dislikes: [] };
+  }
+
+  function blockedFlags(prefs) {
+    const out = new Set(prefs.allergies);
+    Object.keys(DIETS).forEach((d) => { if (prefs.diet[d]) DIETS[d].forEach((f) => out.add(f)); });
     return out;
   }
 
   function recipeAllowed(recipe, prefs) {
-    const bad = blocked(prefs);
-    return recipe.items.every(([food]) => FOODS[food].flags.every((fl) => !bad.has(fl)));
+    const bad = blockedFlags(prefs);
+    return recipe.items.every(([food]) =>
+      !prefs.dislikes.includes(food) && FOODS[food].flags.every((fl) => !bad.has(fl)));
   }
 
   function macrosOf(items) {
@@ -114,32 +146,100 @@
     return { kcal: targets.kcal * share, p: targets.p * share, c: targets.c * share, f: targets.f * share };
   }
 
-  // Pick one of the best few fits at random so plans vary between days.
-  function pickMeal(slot, targets, prefs, excludeId) {
+  // Liked ingredients and favourites give a recipe more leeway on fit and a
+  // higher chance of being picked.
+  function preferenceBoost(recipe, prefs, favourites) {
+    const liked = new Set(recipe.items.map(([food]) => food).filter((f) => prefs.likes.includes(f))).size;
+    return Math.min(liked, 2) + (favourites.includes(recipe.id) ? 1 : 0);
+  }
+
+  // Pick at random among recipes that fit nearly as well as the best one,
+  // so plans vary between days.
+  function pickMeal(slot, targets, prefs, favourites, avoid) {
     const target = slotTarget(targets, slot.share);
-    let pool = RECIPES.filter((r) => r.slot === slot.key && recipeAllowed(r, prefs));
-    if (pool.length > 1 && excludeId) pool = pool.filter((r) => r.id !== excludeId);
-    if (!pool.length) return null;
+    const allowed = RECIPES.filter((r) => r.slot === slot.key && recipeAllowed(r, prefs));
+    if (!allowed.length) return null;
+    // Avoid recently shown recipes, relaxing that if it would leave nothing.
+    let pool = allowed.filter((r) => !avoid.includes(r.id));
+    if (!pool.length) pool = allowed.filter((r) => r.id !== avoid[0]);
+    if (!pool.length) pool = allowed;
 
-    const fits = pool.map((r) => fitRecipe(r, target)).sort((a, b) => a.error - b.error);
-    const top = fits.slice(0, Math.min(3, fits.length));
-    const best = top[0].error;
-    // Only consider alternatives that fit nearly as well as the best one.
-    const good = top.filter((f) => f.error <= best * 2.5 + 0.02);
-    return good[Math.floor(Math.random() * good.length)];
+    const fits = pool.map((r) => ({ fit: fitRecipe(r, target), boost: preferenceBoost(r, prefs, favourites) }));
+    const best = Math.min(...fits.map((x) => x.fit.error));
+    const good = fits.filter((x) => x.fit.error <= best + FIT_TOLERANCE * (1 + 2 * x.boost));
+    const weights = good.map((x) => 1 + 1.5 * x.boost);
+    let r = Math.random() * weights.reduce((a, b) => a + b, 0);
+    for (let i = 0; i < good.length; i++) {
+      r -= weights[i];
+      if (r <= 0) return good[i].fit;
+    }
+    return good[good.length - 1].fit;
   }
 
-  function generateDay(targets, prefs) {
+  function emptyHistory() {
+    const h = {};
+    SLOTS.forEach((s) => { h[s.key] = []; });
+    return h;
+  }
+
+  function generateDay(targets, prefs, favourites) {
     const meals = {};
-    SLOTS.forEach((slot) => { meals[slot.key] = pickMeal(slot, targets, prefs); });
-    return { createdAt: new Date().toISOString(), meals };
+    SLOTS.forEach((slot) => { meals[slot.key] = pickMeal(slot, targets, prefs, favourites || [], []); });
+    return { createdAt: new Date().toISOString(), meals, history: emptyHistory() };
   }
 
-  function swapMeal(plan, slotKey, targets, prefs) {
+  function pushHistory(plan, slotKey) {
+    plan.history = plan.history || emptyHistory();
+    const h = plan.history[slotKey] = plan.history[slotKey] || [];
+    const current = plan.meals[slotKey];
+    if (current) h.push(current);
+    if (h.length > HISTORY_MAX) h.shift();
+  }
+
+  function swapMeal(plan, slotKey, targets, prefs, favourites) {
     const slot = SLOTS.find((s) => s.key === slotKey);
     const current = plan.meals[slotKey];
-    plan.meals[slotKey] = pickMeal(slot, targets, prefs, current && current.id);
+    const recent = (plan.history && plan.history[slotKey] || []).slice(-2).map((m) => m.id);
+    const avoid = [current && current.id].concat(recent).filter(Boolean);
+    pushHistory(plan, slotKey);
+    plan.meals[slotKey] = pickMeal(slot, targets, prefs, favourites || [], avoid);
     return plan;
+  }
+
+  function undoSwap(plan, slotKey) {
+    const h = plan.history && plan.history[slotKey];
+    if (h && h.length) plan.meals[slotKey] = h.pop();
+    return plan;
+  }
+
+  // Fit a specific recipe to its meal's share of the targets.
+  function fitFor(recipeId, targets) {
+    const recipe = RECIPES.find((r) => r.id === recipeId);
+    const slot = SLOTS.find((s) => s.key === recipe.slot);
+    return fitRecipe(recipe, slotTarget(targets, slot.share));
+  }
+
+  function setMeal(plan, recipeId, targets) {
+    const slotKey = RECIPES.find((r) => r.id === recipeId).slot;
+    pushHistory(plan, slotKey);
+    plan.meals[slotKey] = fitFor(recipeId, targets);
+    return plan;
+  }
+
+  // Replace meals (and undo history) that no longer match the user's preferences.
+  // Returns the number of meals replaced.
+  function enforcePrefs(plan, targets, prefs, favourites) {
+    let changed = 0;
+    SLOTS.forEach((slot) => {
+      const ok = (m) => m && recipeAllowed(RECIPES.find((r) => r.id === m.id), prefs);
+      if (plan.history && plan.history[slot.key]) plan.history[slot.key] = plan.history[slot.key].filter(ok);
+      const m = plan.meals[slot.key];
+      if ((m && !ok(m)) || (!m && RECIPES.some((r) => r.slot === slot.key && recipeAllowed(r, prefs)))) {
+        plan.meals[slot.key] = pickMeal(slot, targets, prefs, favourites || [], []);
+        changed++;
+      }
+    });
+    return changed;
   }
 
   function dayTotals(plan) {
@@ -161,8 +261,10 @@
   }
 
   window.Planner = {
-    SLOTS, FOODS, RECIPES,
+    SLOTS, FOODS, RECIPES, ALLERGENS,
     recipeById: (id) => RECIPES.find((r) => r.id === id),
-    generateDay, swapMeal, dayTotals, calculateTargets, recipeAllowed,
+    normalizePrefs, recipeAllowed,
+    generateDay, swapMeal, undoSwap, setMeal, fitFor, enforcePrefs,
+    dayTotals, calculateTargets,
   };
 })();

@@ -106,8 +106,8 @@ window.RECIPES = [
   {
     id: 'salmon-poke', slot: 'lunch', name: 'Salmon poke bowl', mins: 20,
     items: [['salmon', 130, 'p'], ['whiteRice', 150, 'c'], ['edamame', 60, 'v'], ['cucumber', 60, 'v'], ['avocado', 40, 'f'], ['soySauce', 15, 'v']],
-    extras: 'Sesame seeds, spring onion, sriracha',
-    steps: ['Bake or pan-sear the salmon until just cooked; flake into chunks.', 'Toss salmon in soy sauce.', 'Arrange rice, salmon, edamame, cucumber and avocado in a bowl.', 'Finish with sesame seeds, spring onion and sriracha.'],
+    extras: 'Spring onion, sriracha',
+    steps: ['Bake or pan-sear the salmon until just cooked; flake into chunks.', 'Toss salmon in soy sauce.', 'Arrange rice, salmon, edamame, cucumber and avocado in a bowl.', 'Finish with spring onion and sriracha.'],
   },
   {
     id: 'tofu-quinoa-bowl', slot: 'lunch', name: 'Crispy tofu & quinoa power bowl', mins: 25,

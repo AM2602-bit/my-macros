@@ -1,6 +1,7 @@
 // Nutrition per 100 g (or 100 ml for liquids). Values are approximate, based on
 // standard food composition tables.
-// flags: meat, fish, dairy, egg, gluten, honey — used to derive dietary filters.
+// flags: meat, fish, shellfish, dairy, egg, gluten, honey, soy, peanut, treenut,
+// sesame — used for diet and allergy filters.
 // unit: optional countable unit; amounts are rounded to whole `step`s of it.
 window.FOODS = {
   oats:          { name: 'Rolled oats',              kcal: 389, p: 16.9, c: 66.3, f: 6.9,  flags: ['gluten'] },
@@ -12,7 +13,7 @@ window.FOODS = {
   parmesan:      { name: 'Parmesan',                 kcal: 431, p: 38.0, c: 4.1,  f: 29.0, flags: ['dairy'] },
   whey:          { name: 'Whey protein powder',      kcal: 380, p: 78.0, c: 6.0,  f: 5.0,  flags: ['dairy'] },
   plantProtein:  { name: 'Plant protein powder',     kcal: 375, p: 80.0, c: 3.0,  f: 6.0,  flags: [] },
-  soyMilk:       { name: 'Unsweetened soy milk',     kcal: 33,  p: 2.9,  c: 1.2,  f: 1.6,  flags: [], ml: true },
+  soyMilk:       { name: 'Unsweetened soy milk',     kcal: 33,  p: 2.9,  c: 1.2,  f: 1.6,  flags: ['soy'], ml: true },
   egg:           { name: 'Eggs',                     kcal: 143, p: 12.6, c: 0.7,  f: 9.5,  flags: ['egg'], unit: { one: 'egg', many: 'eggs', g: 50, step: 1 } },
   eggWhite:      { name: 'Egg whites',               kcal: 52,  p: 10.9, c: 0.7,  f: 0.2,  flags: ['egg'] },
 
@@ -22,10 +23,10 @@ window.FOODS = {
   salmon:        { name: 'Salmon fillet (raw)',      kcal: 208, p: 20.0, c: 0,    f: 13.4, flags: ['fish'] },
   smokedSalmon:  { name: 'Smoked salmon',            kcal: 117, p: 18.3, c: 0,    f: 4.3,  flags: ['fish'] },
   tuna:          { name: 'Tuna in springwater (drained)', kcal: 116, p: 25.5, c: 0, f: 0.8, flags: ['fish'] },
-  prawns:        { name: 'Prawns (raw, peeled)',     kcal: 85,  p: 20.1, c: 0.2,  f: 0.5,  flags: ['fish'] },
+  prawns:        { name: 'Prawns (raw, peeled)',     kcal: 85,  p: 20.1, c: 0.2,  f: 0.5,  flags: ['shellfish'] },
   cod:           { name: 'White fish fillet (raw)',  kcal: 82,  p: 17.8, c: 0,    f: 0.7,  flags: ['fish'] },
-  tofu:          { name: 'Firm tofu',                kcal: 144, p: 17.3, c: 2.8,  f: 8.7,  flags: [] },
-  edamame:       { name: 'Edamame (shelled)',        kcal: 121, p: 11.9, c: 8.9,  f: 5.2,  flags: [] },
+  tofu:          { name: 'Firm tofu',                kcal: 144, p: 17.3, c: 2.8,  f: 8.7,  flags: ['soy'] },
+  edamame:       { name: 'Edamame (shelled)',        kcal: 121, p: 11.9, c: 8.9,  f: 5.2,  flags: ['soy'] },
   lentils:       { name: 'Lentils (cooked)',         kcal: 116, p: 9.0,  c: 20.1, f: 0.4,  flags: [] },
   chickpeas:     { name: 'Chickpeas (canned, drained)', kcal: 139, p: 7.0, c: 22.5, f: 2.6, flags: [] },
   blackBeans:    { name: 'Black beans (canned, drained)', kcal: 91, p: 6.0, c: 16.6, f: 0.3, flags: [] },
@@ -39,7 +40,7 @@ window.FOODS = {
   sweetPotato:   { name: 'Sweet potato (raw)',       kcal: 86,  p: 1.6,  c: 20.1, f: 0.1,  flags: [] },
   potato:        { name: 'Potato (raw)',             kcal: 77,  p: 2.0,  c: 17.0, f: 0.1,  flags: [] },
   riceCakes:     { name: 'Rice cakes',               kcal: 387, p: 8.0,  c: 81.0, f: 2.8,  flags: [], unit: { one: 'rice cake', many: 'rice cakes', g: 10, step: 1 } },
-  granola:       { name: 'Granola',                  kcal: 471, p: 10.0, c: 64.0, f: 20.0, flags: ['gluten'] },
+  granola:       { name: 'Granola',                  kcal: 471, p: 10.0, c: 64.0, f: 20.0, flags: ['gluten', 'treenut'] },
 
   banana:        { name: 'Banana',                   kcal: 89,  p: 1.1,  c: 22.8, f: 0.3,  flags: [] },
   blueberries:   { name: 'Blueberries',              kcal: 57,  p: 0.7,  c: 14.5, f: 0.3,  flags: [] },
@@ -61,14 +62,26 @@ window.FOODS = {
   stirFryVeg:    { name: 'Stir-fry vegetable mix',   kcal: 50,  p: 2.5,  c: 9.0,  f: 0.4,  flags: [] },
   passata:       { name: 'Tomato passata',           kcal: 29,  p: 1.3,  c: 5.5,  f: 0.2,  flags: [], ml: true },
   lemon:         { name: 'Lemon or lime juice',      kcal: 22,  p: 0.4,  c: 6.9,  f: 0.2,  flags: [], ml: true },
-  soySauce:      { name: 'Soy sauce (tamari if gluten-free)', kcal: 53, p: 8.1, c: 4.9, f: 0.6, flags: [], ml: true },
+  soySauce:      { name: 'Soy sauce (tamari if gluten-free)', kcal: 53, p: 8.1, c: 4.9, f: 0.6, flags: ['soy'], ml: true },
 
   avocado:       { name: 'Avocado',                  kcal: 160, p: 2.0,  c: 8.5,  f: 14.7, flags: [] },
   oliveOil:      { name: 'Olive oil',                kcal: 884, p: 0,    c: 0,    f: 100,  flags: [], ml: true },
-  peanutButter:  { name: 'Peanut butter',            kcal: 588, p: 25.1, c: 20.0, f: 50.4, flags: [] },
-  almonds:       { name: 'Almonds',                  kcal: 579, p: 21.2, c: 21.6, f: 49.9, flags: [] },
+  peanutButter:  { name: 'Peanut butter',            kcal: 588, p: 25.1, c: 20.0, f: 50.4, flags: ['peanut'] },
+  almonds:       { name: 'Almonds',                  kcal: 579, p: 21.2, c: 21.6, f: 49.9, flags: ['treenut'] },
   chia:          { name: 'Chia seeds',               kcal: 486, p: 16.5, c: 42.1, f: 30.7, flags: [] },
-  hummus:        { name: 'Hummus',                   kcal: 166, p: 7.9,  c: 14.3, f: 9.6,  flags: [] },
+  hummus:        { name: 'Hummus',                   kcal: 166, p: 7.9,  c: 14.3, f: 9.6,  flags: ['sesame'] },
   coconutMilk:   { name: 'Light coconut milk',       kcal: 74,  p: 0.7,  c: 2.6,  f: 6.8,  flags: [], ml: true },
   darkChoc:      { name: 'Dark chocolate (70%)',     kcal: 598, p: 7.8,  c: 45.9, f: 42.6, flags: [] },
 };
+
+// Grouping for the food preferences screen.
+window.FOOD_GROUPS = [
+  ['Meat & seafood',     ['chicken', 'beefMince', 'turkey', 'salmon', 'smokedSalmon', 'tuna', 'prawns', 'cod']],
+  ['Dairy & eggs',       ['milk', 'greekYogurt', 'cottage', 'feta', 'cheddar', 'parmesan', 'egg', 'eggWhite', 'whey']],
+  ['Plant protein',      ['tofu', 'edamame', 'lentils', 'chickpeas', 'blackBeans', 'soyMilk', 'plantProtein']],
+  ['Grains & starches',  ['oats', 'bread', 'wrap', 'pasta', 'brownRice', 'whiteRice', 'quinoa', 'sweetPotato', 'potato', 'riceCakes', 'granola']],
+  ['Fruit',              ['banana', 'blueberries', 'strawberries', 'apple']],
+  ['Vegetables',         ['spinach', 'saladLeaves', 'cherryTomato', 'cucumber', 'capsicum', 'onion', 'garlic', 'mushrooms', 'zucchini', 'broccoli', 'greenBeans', 'stirFryVeg', 'passata']],
+  ['Nuts, seeds & fats', ['avocado', 'oliveOil', 'peanutButter', 'almonds', 'chia', 'hummus', 'coconutMilk']],
+  ['Extras',             ['honey', 'darkChoc', 'lemon', 'soySauce']],
+];

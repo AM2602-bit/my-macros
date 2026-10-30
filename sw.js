@@ -1,6 +1,6 @@
 // Offline support: serve the app shell from cache, refresh it in the background.
 // Bump VERSION whenever app files change so phones pick up the update.
-const VERSION = 'mm-v1';
+const VERSION = 'mm-v3';
 const SHELL = [
   './',
   'index.html',
@@ -8,6 +8,10 @@ const SHELL = [
   'js/foods.js',
   'js/recipes.js',
   'js/planner.js',
+  'js/packs.js',
+  'js/shopping.js',
+  'js/firebase-config.js',
+  'js/cloud.js',
   'js/app.js',
   'manifest.webmanifest',
   'icons/icon.svg',
@@ -28,12 +32,13 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  if (event.request.method !== 'GET') return;
+  // Leave Google sign-in and Firestore traffic to the network.
+  if (event.request.method !== 'GET' || new URL(event.request.url).origin !== location.origin) return;
   event.respondWith(
     caches.match(event.request).then((cached) => {
       const network = fetch(event.request)
         .then((res) => {
-          if (res.ok && new URL(event.request.url).origin === location.origin) {
+          if (res.ok) {
             const copy = res.clone();
             caches.open(VERSION).then((c) => c.put(event.request, copy));
           }
