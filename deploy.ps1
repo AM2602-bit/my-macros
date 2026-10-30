@@ -43,7 +43,8 @@ if ($env:MM_FTP_PASSWORD) {
   $password = [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($secure))
 }
 $cred = New-Object System.Net.NetworkCredential($cfg.username, $password)
-$base = 'ftp://' + $cfg.host + '/' + $cfg.remoteDir.Trim('/')
+$dir = $cfg.remoteDir.Trim('/')
+$base = 'ftp://' + $cfg.host + $(if ($dir) { '/' + $dir } else { '' })
 
 function New-FtpRequest([string]$url, [string]$method) {
   $req = [System.Net.FtpWebRequest]::Create($url)
@@ -70,7 +71,7 @@ $files = foreach ($item in $include) {
 Write-Host "Deploying $($files.Count) files to $base"
 if ($DryRun) { $files | ForEach-Object { $_.FullName.Substring($root.Length + 1) }; exit 0 }
 
-Ensure-FtpDir $base
+if ($dir) { Ensure-FtpDir $base }
 $made = @{}
 foreach ($f in $files) {
   $rel = $f.FullName.Substring($root.Length + 1).Replace('\', '/')
