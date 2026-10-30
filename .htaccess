@@ -1,0 +1,13 @@
+# Apache settings for the web host.
+
+# Always use HTTPS (needed for install-to-home-screen, offline mode and sign-in).
+RewriteEngine On
+RewriteCond %{HTTPS} !=on
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+AddType application/manifest+json .webmanifest
+
+# Let phones pick up new versions straight away.
+<FilesMatch "^(index\.html|sw\.js|manifest\.webmanifest)$">
+  Header set Cache-Control "no-cache"
+</FilesMatch>
