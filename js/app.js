@@ -286,7 +286,7 @@
     const recipe = P.recipeById(meal.id);
     return `<article class="card meal" data-slot="${slot.key}">
       <div class="meal-head">
-        <div class="meal-slot"><span class="eyebrow">${slot.label}</span><span class="time">${recipe.mins} min</span></div>
+        <div class="meal-slot"><span class="eyebrow">${slot.label}</span><span class="time">${esc(recipe.cuisine)} · ${recipe.mins} min</span></div>
         <div class="meal-title"><h3>${esc(recipe.name)}</h3>
           <div class="title-actions">
             <button class="icon-btn" type="button" data-cart="${slot.key}" aria-label="Add to shopping cart">${ICONS.cart}</button>
@@ -388,7 +388,7 @@
     return `<div class="fav-row${allowed ? '' : ' blocked'}">
       <div class="fav-main">
         <p class="fav-name">${esc(recipe.name)}</p>
-        <p class="fav-meta">${recipe.mins} min${allowed ? '' : ' · <span class="warn-text">doesn\'t match your current preferences</span>'}</p>
+        <p class="fav-meta">${esc(recipe.cuisine)} · ${recipe.mins} min${allowed ? '' : ' · <span class="warn-text">doesn\'t match your current preferences</span>'}</p>
         ${fit ? `<div class="chips">${chips(fit.macros)}</div>` : ''}
       </div>
       <div class="fav-actions">${actionsHtml(allowed)}</div>

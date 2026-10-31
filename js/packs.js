@@ -82,4 +82,12 @@ window.PACKS = {
   mango:         { size: 200,  label: '1 mango',                       search: 'mango' },
   pineapple:     { size: 260,  label: '440 g can (≈260 g drained)',    search: 'pineapple pieces in juice' },
   cocoa:         { size: 250,  label: '250 g tin',                     search: 'cocoa powder' },
+  lambLean:      { size: 500,  label: '500 g pack',                    search: 'lamb leg steaks' },
+  beefSteak:     { size: 500,  label: '500 g pack',                    search: 'beef rump steak' },
+  halloumi:      { size: 180,  label: '180 g block',                   search: 'light halloumi' },
+  couscous:      { size: 1250, label: '500 g box (≈1.25 kg cooked)',   search: 'couscous 500g' },
+  pitaBread:     { size: 384,  label: '6 pack',                        search: 'wholemeal pita bread' },
+  eggplant:      { size: 400,  label: '1 eggplant',                    search: 'eggplant' },
+  cabbage:       { size: 1000, label: '½ cabbage (≈1 kg)',             search: 'cabbage' },
+  peas:          { size: 500,  label: '500 g bag (frozen)',            search: 'frozen peas' },
 };
