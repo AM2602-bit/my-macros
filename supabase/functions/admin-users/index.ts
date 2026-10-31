@@ -21,7 +21,10 @@ const BAN_FOREVER = '876000h';
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: cors });
   try {
-    const admin = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!, {
+    // Projects on Supabase's newer API keys may expose the server key under a different name.
+    const serverKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || Deno.env.get('SUPABASE_SECRET_KEY');
+    if (!serverKey) return json({ error: 'Server key not available to the function (SUPABASE_SERVICE_ROLE_KEY).' }, 500);
+    const admin = createClient(Deno.env.get('SUPABASE_URL')!, serverKey, {
       auth: { persistSession: false, autoRefreshToken: false },
     });
 
