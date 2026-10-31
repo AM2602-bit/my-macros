@@ -13,7 +13,7 @@ $configPath = Join-Path $root 'deploy.config.json'
 $secretPath = Join-Path $root 'deploy.secret'
 
 # Only these are published; dev files (README, serve.ps1, .git, ...) stay local.
-$include = @('index.html', 'manifest.webmanifest', 'sw.js', '.htaccess', 'css', 'js', 'icons')
+$include = @('index.html', 'manifest.webmanifest', 'sw.js', '.htaccess', 'css', 'js', 'icons', 'admin')
 
 if (-not (Test-Path $configPath)) {
   [ordered]@{

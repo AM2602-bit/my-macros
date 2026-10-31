@@ -1,6 +1,6 @@
 // Offline support: serve the app shell from cache, refresh it in the background.
 // Bump VERSION whenever app files change so phones pick up the update.
-const VERSION = 'mm-v3';
+const VERSION = 'mm-v4';
 const SHELL = [
   './',
   'index.html',
@@ -10,7 +10,8 @@ const SHELL = [
   'js/planner.js',
   'js/packs.js',
   'js/shopping.js',
-  'js/firebase-config.js',
+  'js/vendor/supabase-2.45.4.min.js',
+  'js/supabase-config.js',
   'js/cloud.js',
   'js/app.js',
   'manifest.webmanifest',
@@ -32,8 +33,9 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  // Leave Google sign-in and Firestore traffic to the network.
-  if (event.request.method !== 'GET' || new URL(event.request.url).origin !== location.origin) return;
+  // Leave Supabase (accounts and data) traffic and the admin app to the network.
+  const url = new URL(event.request.url);
+  if (event.request.method !== 'GET' || url.origin !== location.origin || url.pathname.includes('/admin/')) return;
   event.respondWith(
     caches.match(event.request).then((cached) => {
       const network = fetch(event.request)

@@ -21,6 +21,9 @@
     set(key, value) {
       try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) { /* ignore */ }
     },
+    remove(key) {
+      try { localStorage.removeItem(key); } catch (e) { /* ignore */ }
+    },
   };
 
   // ---------- State ----------
@@ -147,9 +150,7 @@
   function renderAvatar() {
     const el = $('#avatar');
     const u = state.user;
-    if (u && u.photoURL) {
-      el.innerHTML = `<img src="${esc(u.photoURL)}" alt="" referrerpolicy="no-referrer">`;
-    } else if (u) {
+    if (u) {
       el.textContent = (u.displayName || u.email || '?')[0].toUpperCase();
     } else {
       el.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4" /><path d="M4 20c1.5-4 4.5-6 8-6s6.5 2 8 6" /></svg>';
@@ -720,21 +721,29 @@
     const u = state.user;
     if (!Cloud.enabled) {
       el.innerHTML = `<h2>Account</h2>
-        <p class="hint">You're using My Mac-ro's on this device only. Google sign-in hasn't been set up for this app yet (see the README).</p>`;
+        <p class="hint">You're using My Mac-ro's on this device only. Accounts haven't been set up for this app yet (see the README).</p>`;
     } else if (u) {
       el.innerHTML = `<div class="account-row">
-          <div class="avatar avatar-lg">${u.photoURL ? `<img src="${esc(u.photoURL)}" alt="" referrerpolicy="no-referrer">` : esc((u.displayName || u.email || '?')[0].toUpperCase())}</div>
+          <div class="avatar avatar-lg">${esc((u.displayName || u.email || '?')[0].toUpperCase())}</div>
           <div class="account-info">
             <p class="fav-name">${esc(u.displayName || 'Signed in')}</p>
             <p class="fav-meta">${esc(u.email || '')}${u.offline ? ' · offline' : ''}</p>
           </div>
         </div>
-        <p class="hint">Your targets, favourites and preferences sync to your Google account.</p>
+        <p class="hint">Your targets, favourites, preferences and shopping list are saved to your account.</p>
+        <details class="calc" id="pw-change">
+          <summary>Change password</summary>
+          <form id="pw-form" novalidate>
+            <label class="field"><span>New password (at least 8 characters)</span><input type="password" name="pw1" autocomplete="new-password"></label>
+            <label class="field"><span>Confirm new password</span><input type="password" name="pw2" autocomplete="new-password"></label>
+            <button class="btn btn-ghost btn-block" type="submit">Update password</button>
+          </form>
+        </details>
         <button class="btn btn-ghost btn-block" type="button" id="btn-signout">Sign out</button>`;
     } else {
       el.innerHTML = `<h2>Account</h2>
         <p class="hint">You're not signed in, so your data is saved on this device only.</p>
-        <button class="btn btn-google btn-block" type="button" id="btn-signin-me">Continue with Google</button>`;
+        <button class="btn btn-primary btn-block" type="button" id="btn-signin-me">Sign in or create an account</button>`;
     }
   }
 
@@ -808,25 +817,108 @@
       prefsUpdated();
       renderFoods();
     } else if (e.target.closest('#btn-signout')) {
+      // Don't leave this user's data behind on a shared device.
+      const uid = state.user && state.user.uid;
       await Cloud.signOut();
+      if (uid) local.remove('mm.data.' + uid);
     } else if (e.target.closest('#btn-signin-me')) {
-      signIn();
+      showSignin('');
+    }
+  });
+
+  $('#view-me').addEventListener('submit', async (e) => {
+    if (e.target.id !== 'pw-form') return;
+    e.preventDefault();
+    const f = e.target.elements;
+    if (f.pw1.value.length < 8) return toast('Password must be at least 8 characters');
+    if (f.pw1.value !== f.pw2.value) return toast("Passwords don't match");
+    try {
+      await Cloud.updatePassword(f.pw1.value);
+      e.target.reset();
+      $('#pw-change').open = false;
+      toast('Password updated');
+    } catch (ex) {
+      toast(ex.message);
     }
   });
 
   $('#food-search').addEventListener('input', renderFoods);
 
   // ---------- Sign-in ----------
-  async function signIn() {
-    try {
-      await Cloud.signIn();
-    } catch (e) {
-      console.error(e);
-      toast('Sign-in failed. Please try again');
+  const authForm = $('#auth-form');
+  const AUTH_TEXT = {
+    signin: { title: 'Welcome back', sub: 'Sign in to see your meal plans, favourites and shopping list.', submit: 'Sign in', pw: 'Password', ac: 'current-password' },
+    signup: { title: 'Create your account', sub: 'Save your macros, preferences and favourites, and use them on any device.', submit: 'Create account', pw: 'Password (at least 8 characters)', ac: 'new-password' },
+    forgot: { title: 'Reset your password', sub: "Enter your email and we'll send you a link to set a new password.", submit: 'Send reset link' },
+    recover: { title: 'Set a new password', sub: 'Choose a new password for your account.', submit: 'Save new password', pw: 'New password (at least 8 characters)', ac: 'new-password' },
+  };
+  let authMode = 'signin';
+  let recovering = false;
+
+  function setAuthMode(mode) {
+    authMode = mode;
+    const t = AUTH_TEXT[mode];
+    $('#auth-title').textContent = t.title;
+    $('#auth-sub').textContent = t.sub;
+    $('#auth-submit').textContent = t.submit;
+    if (t.pw) {
+      $('#pw-label').textContent = t.pw;
+      authForm.elements.password.autocomplete = t.ac;
     }
+    document.querySelectorAll('#view-signin [data-for]').forEach((el) => {
+      el.hidden = !el.dataset.for.split(' ').includes(mode) || (el.hasAttribute('data-signup-only') && !Cloud.allowSignup);
+    });
+    $('#btn-guest').hidden = !Cloud.allowGuest || mode === 'recover';
+    $('#auth-error').textContent = '';
   }
 
-  $('#btn-google').addEventListener('click', signIn);
+  $('#view-signin').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-mode]');
+    if (!b) return;
+    setAuthMode(b.dataset.mode);
+    $('#signin-status').textContent = '';
+  });
+
+  authForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const f = authForm.elements;
+    const email = f.email.value.trim();
+    const password = f.password.value;
+    const err = (m) => { $('#auth-error').textContent = m; };
+    if (authMode !== 'recover' && !/^\S+@\S+\.\S+$/.test(email)) return err('Enter a valid email address.');
+    if ((authMode === 'signup' || authMode === 'recover') && password.length < 8) return err('Password must be at least 8 characters.');
+    if (authMode === 'signin' && !password) return err('Enter your password.');
+    const btn = $('#auth-submit');
+    btn.disabled = true;
+    err('');
+    $('#signin-status').textContent = '';
+    try {
+      if (authMode === 'signin') {
+        await Cloud.signIn(email, password);
+      } else if (authMode === 'signup') {
+        const r = await Cloud.signUp(email, password, f.name.value.trim());
+        if (r.needsConfirmation) {
+          setAuthMode('signin');
+          $('#signin-status').textContent = `We've sent a confirmation link to ${email}. Open it, then sign in.`;
+        }
+      } else if (authMode === 'forgot') {
+        await Cloud.resetPassword(email);
+        setAuthMode('signin');
+        $('#signin-status').textContent = `If ${email} has an account, a reset link is on its way.`;
+      } else if (authMode === 'recover') {
+        await Cloud.updatePassword(password);
+        recovering = false;
+        f.password.value = '';
+        toast('Password updated');
+        show(state.data.targets ? 'plan' : 'targets');
+      }
+    } catch (ex) {
+      err(ex.message);
+    } finally {
+      btn.disabled = false;
+    }
+  });
+
   $('#btn-guest').addEventListener('click', () => {
     local.set('mm.guestChosen', true);
     startSession(null);
@@ -843,32 +935,51 @@
     renderAvatar();
     renderPlan();
     updateShopBadge();
-    show(state.data.targets ? 'plan' : 'targets');
+    if (recovering) {
+      setAuthMode('recover');
+      show('signin');
+    } else {
+      show(state.data.targets ? 'plan' : 'targets');
+    }
   }
 
-  async function onAuthChanged(fbUser) {
-    if (!fbUser) {
+  // Shown on the sign-in screen after we sign someone out (e.g. a disabled account).
+  let signOutMessage = '';
+
+  async function onAuthChanged(user) {
+    if (!user) {
       local.set('mm.lastUser', null);
-      if (local.get('mm.guestChosen')) startSession(null);
-      else showSignin('');
+      if (Cloud.allowGuest && local.get('mm.guestChosen')) startSession(null);
+      else showSignin(signOutMessage);
+      signOutMessage = '';
       return;
     }
-    const user = { uid: fbUser.uid, displayName: fbUser.displayName, email: fbUser.email, photoURL: fbUser.photoURL };
-    local.set('mm.lastUser', user);
     let data = null;
     try {
+      const prof = await Cloud.profile(user.uid);
+      if (prof && prof.disabled) {
+        signOutMessage = 'This account has been disabled. Contact the app administrator.';
+        await Cloud.signOut();
+        return;
+      }
+      if (prof && prof.display_name) user.displayName = prof.display_name;
       const cloud = await Cloud.load(user.uid);
       if (cloud) data = sanitize(cloud);
     } catch (e) {
       console.warn('Cloud load failed', e);
     }
-    // First sign-in on this account: carry over what was set up as a guest.
-    if (!data) data = local.get('mm.data.' + user.uid) ? loadLocal(user.uid) : loadLocal('guest');
+    local.set('mm.lastUser', user);
+    // New account: start fresh, or carry over guest data where guest mode is allowed.
+    if (!data) {
+      if (local.get('mm.data.' + user.uid)) data = loadLocal(user.uid);
+      else data = Cloud.allowGuest ? loadLocal('guest') : sanitize(null);
+    }
     startSession(user, data);
   }
 
   function showSignin(status) {
     $('#signin-actions').hidden = false;
+    setAuthMode('signin');
     $('#signin-status').textContent = status;
     show('signin');
   }
@@ -880,20 +991,19 @@
     // Start with whatever is cached so the app is usable immediately, then let auth confirm.
     const last = local.get('mm.lastUser');
     if (last) startSession(last);
-    else if (local.get('mm.guestChosen')) startSession(null);
+    else if (Cloud.allowGuest && local.get('mm.guestChosen')) startSession(null);
     else { $('#signin-actions').hidden = true; $('#signin-status').textContent = 'Loading…'; show('signin'); }
 
-    Cloud.init(onAuthChanged).catch((e) => {
-      console.warn('Sign-in unavailable', e);
+    Cloud.init(onAuthChanged, () => { recovering = true; }).catch((e) => {
+      console.warn('Accounts unavailable', e);
       if (last) {
         state.user = Object.assign({}, last, { offline: true });
         renderAccount();
-      } else if (!local.get('mm.guestChosen')) {
-        showSignin("Can't reach Google right now. You can continue without an account.");
+      } else {
+        showSignin("Can't reach the server right now. Check your connection and try again.");
       }
     });
   }
-
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
     window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
   }

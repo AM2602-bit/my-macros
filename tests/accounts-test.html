@@ -1,0 +1,327 @@
+<!doctype html>
+<html><body><pre id="out">running</pre>
+<iframe id="f" style="width:420px;height:800px"></iframe>
+<script>
+// ---------- In-memory Supabase stand-in (auth, tables, admin-users function) ----------
+function mockSupabase() {
+  const DB = window.parent.__db;
+  const uuid = () => 'u' + Math.random().toString(36).slice(2, 10);
+  window.supabase = { createClient(url, key, opts) {
+    const skey = opts.auth.storageKey;
+    const listeners = [];
+    const getSession = () => { try { const s = JSON.parse(localStorage.getItem(skey)); return s && DB.users.find((u) => u.id === s.user.id) ? s : null; } catch (e) { return null; } };
+    const emit = (ev) => listeners.forEach((cb) => cb(ev, getSession()));
+    const setSession = (u) => { localStorage.setItem(skey, JSON.stringify({ user: { id: u.id, email: u.email, user_metadata: u.meta } })); };
+    const me = () => { const s = getSession(); return s && DB.users.find((u) => u.id === s.user.id); };
+    const isAdmin = () => { const u = me(); const p = u && DB.profiles.find((x) => x.id === u.id); return !!p && p.role === 'admin' && !p.disabled; };
+    const client = {
+      auth: {
+        onAuthStateChange(cb) { listeners.push(cb); setTimeout(() => cb('INITIAL_SESSION', getSession()), 0); return { data: { subscription: { unsubscribe() {} } } }; },
+        async signInWithPassword({ email, password }) {
+          const u = DB.users.find((x) => x.email === email.toLowerCase());
+          if (!u || u.password !== password) return { error: { message: 'Invalid login credentials' } };
+          if (u.banned) return { error: { message: 'User is banned' } };
+          u.last_sign_in_at = new Date().toISOString(); setSession(u); emit('SIGNED_IN'); return { data: {}, error: null };
+        },
+        async signUp({ email, password, options }) {
+          email = email.toLowerCase();
+          if (DB.users.find((x) => x.email === email)) return { error: { message: 'User already registered' } };
+          const u = DB.createUser(email, password, (options.data || {}).display_name, !DB.confirmEmail);
+          if (DB.confirmEmail) return { data: { session: null, user: u }, error: null };
+          setSession(u); emit('SIGNED_IN'); return { data: { session: {}, user: u }, error: null };
+        },
+        async signOut() { localStorage.removeItem(skey); emit('SIGNED_OUT'); return { error: null }; },
+        async resetPasswordForEmail(email) { DB.emails.push(email); return { error: null }; },
+        async updateUser({ password, data }) { const u = me(); if (password) u.password = password; if (data) Object.assign(u.meta, data); emit('USER_UPDATED'); return { data: {}, error: null }; },
+        async getUser() { const u = me(); return { data: { user: u ? { id: u.id, email: u.email } : null } }; },
+      },
+      from(table) {
+        const filters = []; let op = 'select'; let payload;
+        const rows = () => DB[table].filter((r) => filters.every(([c, v]) => r[c] === v));
+        const visible = (r) => { const u = me(); if (!u) return false; if (isAdmin()) return true; const owner = r.id || r.user_id; const p = DB.profiles.find((x) => x.id === u.id); return owner === u.id && (table === 'profiles' || !p.disabled); };
+        const run = async (single) => {
+          if (op === 'select') { const d = rows().filter(visible).map((r) => JSON.parse(JSON.stringify(r))); return { data: single ? d[0] || null : d, error: null }; }
+          if (op === 'update') { rows().filter(visible).forEach((r) => Object.assign(r, payload)); return { data: null, error: null }; }
+          if (op === 'upsert') {
+            const key = table === 'profiles' ? 'id' : 'user_id';
+            if (!visible(payload)) return { error: { message: 'row-level security violation' } };
+            const ex = DB[table].find((r) => r[key] === payload[key]);
+            if (ex) Object.assign(ex, JSON.parse(JSON.stringify(payload))); else DB[table].push(JSON.parse(JSON.stringify(payload)));
+            return { data: null, error: null };
+          }
+        };
+        const b = {
+          select() { return b; }, eq(c, v) { filters.push([c, v]); return b; },
+          update(o) { op = 'update'; payload = o; return b; }, upsert(o) { op = 'upsert'; payload = o; return b; },
+          maybeSingle() { return run(true); }, single() { return run(true); },
+          then(res, rej) { return run(false).then(res, rej); },
+        };
+        return b;
+      },
+      functions: {
+        async invoke(name, { body }) {
+          const fail = (msg, status) => ({ data: null, error: { message: 'Edge Function returned a non-2xx status code', context: { json: async () => ({ error: msg }), status } } });
+          const caller = me();
+          if (!caller) return fail('Please sign in again.', 401);
+          if (!isAdmin()) return fail('Admins only.', 403);
+          const prof = (id) => DB.profiles.find((p) => p.id === id);
+          switch (body.action) {
+            case 'list': return { data: { users: DB.users.map((u) => ({ id: u.id, email: u.email, display_name: prof(u.id).display_name, role: prof(u.id).role, disabled: prof(u.id).disabled, confirmed: u.confirmed, created_at: u.created_at, last_sign_in_at: u.last_sign_in_at, data_updated_at: (DB.user_data.find((d) => d.user_id === u.id) || {}).updated_at || null })) }, error: null };
+            case 'create': {
+              if (DB.users.find((x) => x.email === body.email)) return fail('A user with this email address has already been registered', 422);
+              if ((body.password || '').length < 8) return fail('Password must be at least 8 characters.', 400);
+              const u = DB.createUser(body.email, body.password, body.display_name, true); if (body.role === 'admin') prof(u.id).role = 'admin'; return { data: { id: u.id }, error: null };
+            }
+            case 'update': {
+              if (body.id === caller.id && (body.role === 'user' || body.disabled === true)) return fail("You can't remove your own admin access or disable yourself.", 400);
+              const u = DB.users.find((x) => x.id === body.id); const p = prof(body.id);
+              if (body.password !== undefined) u.password = body.password;
+              if (body.disabled !== undefined) { u.banned = !!body.disabled; p.disabled = !!body.disabled; }
+              if (body.display_name !== undefined) p.display_name = body.display_name;
+              if (body.role) p.role = body.role;
+              return { data: { ok: true }, error: null };
+            }
+            case 'delete': {
+              if (body.id === caller.id) return fail("You can't delete your own account here.", 400);
+              DB.users = DB.users.filter((x) => x.id !== body.id); DB.profiles = DB.profiles.filter((x) => x.id !== body.id); DB.user_data = DB.user_data.filter((x) => x.user_id !== body.id);
+              return { data: { ok: true }, error: null };
+            }
+          }
+          return fail('Unknown action.', 400);
+        },
+      },
+    };
+    return client;
+  } };
+}
+
+window.__db = {
+  users: [], profiles: [], user_data: [], emails: [], confirmEmail: false,
+  createUser(email, password, name, confirmed) {
+    const u = { id: 'u' + Math.random().toString(36).slice(2, 10), email: email.toLowerCase(), password, meta: { display_name: name || '' }, confirmed, banned: false, created_at: new Date().toISOString(), last_sign_in_at: null };
+    this.users.push(u);
+    this.profiles.push({ id: u.id, email: u.email, display_name: name || email.split('@')[0], role: 'user', disabled: false });
+    return u;
+  },
+};
+
+// ---------- Harness ----------
+const L = [];
+const check = (n, ok, x) => L.push((ok ? 'PASS ' : 'FAIL ') + n + (x ? '  ' + x : ''));
+const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+const frame = document.getElementById('f');
+const errors = [];
+const CONFIG = "window.SUPABASE_CONFIG = { url: 'https://mock.supabase.co', anonKey: 'anon', allowSignup: true, allowGuest: false };";
+
+async function load(path, base) {
+  let html = await (await fetch(path + '?v=' + Math.random())).text();
+  html = html.replace(/<head>/, `<head><base href="${base}">`)
+    .replace(/<script src="[^"]*supabase-2\.45\.4\.min\.js"><\/script>/, `<script>(${mockSupabase.toString()})()<\/script>`)
+    .replace(/<script src="[^"]*supabase-config\.js"><\/script>/, `<script>${CONFIG}<\/script>`);
+  await new Promise((res) => { frame.onload = res; frame.srcdoc = html; });
+  const w = frame.contentWindow;
+  w.addEventListener('error', (e) => errors.push(path + ': ' + e.message));
+  w.addEventListener('unhandledrejection', (e) => errors.push(path + ': ' + (e.reason && e.reason.message)));
+  await wait(150);
+  return w;
+}
+
+(async () => {
+  const DB = window.__db;
+  localStorage.clear();
+  const shot = new URLSearchParams(location.search).get('shot');
+  if (shot) {
+    document.body.style.margin = '0'; document.getElementById('out').remove();
+    Object.assign(frame.style, { width: '100vw', height: '100vh', border: '0', display: 'block' });
+    const a = DB.createUser('ash@example.com', 'adminpass1', 'Ash', true); DB.profiles[0].role = 'admin'; a.last_sign_in_at = new Date().toISOString();
+    const b = DB.createUser('sam@example.com', 'x', 'Sam Lee', true); b.last_sign_in_at = new Date(Date.now() - 2 * 86400000).toISOString();
+    DB.user_data.push({ user_id: b.id, updated_at: new Date(Date.now() - 3600000).toISOString(), data: { targets: { kcal: 2100, p: 160, c: 210, f: 70 }, prefs: { diet: { vegetarian: true }, allergies: ['peanut'], likes: ['tofu', 'banana'], dislikes: ['mushrooms'] }, favourites: ['overnight-oats', 'satay-tofu'], cart: { entries: [{ times: 3 }] } } });
+    const c = DB.createUser('jo@example.com', 'x', 'Jo Park', false);
+    const e = DB.createUser('alex@example.com', 'x', 'Alex Kim', true); DB.profiles[3].disabled = true; e.banned = true;
+    if (shot === 'signin' || shot === 'signup') {
+      const w = await load('/index.html', '/'); await wait(300);
+      if (shot === 'signup') w.document.querySelector('[data-mode="signup"]').click();
+    } else {
+      localStorage.setItem('mm-admin-auth', JSON.stringify({ user: { id: a.id, email: a.email, user_metadata: {} } }));
+      const w = await load('/admin/index.html', '/admin/'); await wait(500);
+      if (shot === 'drawer') { w.document.querySelector(`#user-rows tr[data-id="${b.id}"]`).click(); await wait(300); }
+    }
+    return;
+  }
+  try {
+    // ===== Main app =====
+    let w = await load('/index.html', '/');
+    let d = w.document; let q = (s) => d.querySelector(s);
+    const visible = (id) => !q('#view-' + id).hidden;
+    const auth = (vals) => { const f = q('#auth-form'); Object.entries(vals).forEach(([k, v]) => { f.elements[k].value = v; }); f.requestSubmit(); };
+    check('signed out -> sign-in screen', visible('signin') && !q('#signin-actions').hidden && q('#tabbar').hidden);
+    check('signup link visible', !q('[data-signup-only]').hidden);
+    check('guest button hidden (allowGuest false)', q('#btn-guest').hidden);
+
+    q('[data-mode="signup"]').click();
+    check('signup mode shows name field', !q('[data-for="signup"]').hidden && q('#auth-submit').textContent === 'Create account');
+    auth({ name: 'Sam', email: 'sam@example.com', password: 'short' });
+    await wait(50);
+    check('short password rejected', /at least 8/.test(q('#auth-error').textContent));
+    auth({ name: 'Sam', email: 'sam@example.com', password: 'password123' });
+    await wait(300);
+    check('signup signs in -> targets', visible('targets') && DB.users.length === 1 && DB.profiles[0].display_name === 'Sam');
+
+    const f = q('#targets-form');
+    f.elements.kcal.value = 2000; f.elements.p.value = 150; f.elements.c.value = 200; f.elements.f.value = 65;
+    f.requestSubmit();
+    await wait(100);
+    q('.meal[data-slot="breakfast"] [data-fav]').click();
+    await wait(1100);
+    const sam = DB.users[0];
+    const samRow = DB.user_data.find((r) => r.user_id === sam.id);
+    check('data synced to cloud', samRow && samRow.data.targets.kcal === 2000 && samRow.data.favourites.length === 1);
+
+    q('#tabbar [data-view="me"]').click();
+    check('account card shows user', q('#account').textContent.includes('sam@example.com') && q('#account').textContent.includes('Sam'));
+    const pw = q('#pw-form'); pw.elements.pw1.value = 'newpass123'; pw.elements.pw2.value = 'different1'; pw.requestSubmit();
+    await wait(50);
+    check('mismatched passwords rejected', sam.password === 'password123');
+    pw.elements.pw2.value = 'newpass123'; pw.requestSubmit();
+    await wait(100);
+    check('password changed', sam.password === 'newpass123');
+
+    q('#btn-signout').click();
+    await wait(200);
+    check('sign out -> sign-in screen + local data removed', visible('signin') && !localStorage.getItem('mm.data.' + sam.id));
+
+    auth({ email: 'sam@example.com', password: 'wrongpass1' });
+    await wait(100);
+    check('wrong password message', q('#auth-error').textContent === 'Incorrect email or password.');
+    auth({ email: 'sam@example.com', password: 'newpass123' });
+    await wait(300);
+    check('sign in restores cloud data', visible('plan') && d.querySelectorAll('.meal').length === 4 && q('.meal [data-fav][aria-pressed="true"]'));
+
+    // Reload with session: should go straight to plan
+    w = await load('/index.html', '/'); d = w.document; q = (s) => d.querySelector(s);
+    await wait(300);
+    check('session persists across reload', !q('#view-plan').hidden);
+    q('#tabbar [data-view="me"]').click();
+    q('#btn-signout').click();
+    await wait(200);
+
+    // Second user gets a clean slate
+    q('[data-mode="signup"]').click();
+    auth({ name: 'Alex', email: 'alex@example.com', password: 'alexpass1' });
+    await wait(300);
+    check('second user starts fresh', !q('#view-targets').hidden && q('#targets-form').elements.kcal.value === '');
+    q('#tabbar [data-view="me"]').click(); q('#btn-signout').click(); await wait(200);
+
+    // Duplicate signup
+    q('[data-mode="signup"]').click();
+    auth({ name: 'X', email: 'sam@example.com', password: 'whatever1' });
+    await wait(100);
+    check('duplicate email message', /already exists/.test(q('#auth-error').textContent));
+
+    // Forgot password
+    q('[data-mode="signin"]').click(); q('[data-mode="forgot"]').click();
+    check('forgot mode hides password', q('[data-for="signin signup recover"]').hidden);
+    auth({ email: 'sam@example.com' });
+    await wait(100);
+    check('reset email requested', DB.emails.includes('sam@example.com') && /reset link/.test(q('#signin-status').textContent));
+
+    // Disabled account (profile flag) and banned (auth)
+    DB.profiles.find((p) => p.email === 'alex@example.com').disabled = true;
+    auth({ email: 'alex@example.com', password: 'alexpass1' });
+    await wait(300);
+    check('disabled profile blocked', !q('#view-signin').hidden && /disabled/.test(q('#signin-status').textContent));
+    DB.users.find((u) => u.email === 'alex@example.com').banned = true;
+    auth({ email: 'alex@example.com', password: 'alexpass1' });
+    await wait(100);
+    check('banned account message', /disabled/.test(q('#auth-error').textContent));
+
+    // Email confirmation required
+    DB.confirmEmail = true;
+    q('[data-mode="signup"]').click();
+    auth({ name: 'Jo', email: 'jo@example.com', password: 'jopass123' });
+    await wait(100);
+    check('confirmation message', /confirmation link/.test(q('#signin-status').textContent) && !q('#view-signin').hidden);
+    DB.confirmEmail = false;
+
+    // ===== Admin app =====
+    DB.profiles.find((p) => p.email === 'sam@example.com').role = 'admin';
+    w = await load('/admin/index.html', '/admin/'); d = w.document; q = (s) => d.querySelector(s);
+    await wait(200);
+    check('admin: sign-in shown', !q('#admin-signin').hidden && q('#admin-users').hidden);
+    const asign = (email, password) => { const f2 = q('#admin-signin-form'); f2.elements.email.value = email; f2.elements.password.value = password; f2.requestSubmit(); };
+    asign('jo@example.com', 'jopass123');
+    await wait(300);
+    check('admin: non-admin refused', /admin access/.test(q('#admin-signin-error').textContent) && q('#admin-users').hidden);
+    asign('sam@example.com', 'newpass123');
+    await wait(400);
+    check('admin: signed in, users listed', !q('#admin-users').hidden && d.querySelectorAll('#user-rows tr').length === 3, d.querySelectorAll('#user-rows tr').length + ' rows');
+    check('admin: stats', q('#stats').textContent.includes('3Users') && q('#stats').textContent.includes('1Disabled') && q('#stats').textContent.includes('1Admins'), q('#stats').textContent);
+    q('#user-search').value = 'alex'; q('#user-search').dispatchEvent(new Event('input'));
+    check('admin: search', d.querySelectorAll('#user-rows tr').length === 1);
+    q('#user-search').value = ''; q('#user-filter').value = 'disabled'; q('#user-filter').dispatchEvent(new Event('change'));
+    check('admin: filter disabled', d.querySelectorAll('#user-rows tr').length === 1);
+    q('#user-filter').value = 'all'; q('#user-filter').dispatchEvent(new Event('change'));
+
+    // Add user
+    q('#btn-add-user').click();
+    const af = q('#add-form');
+    check('admin: add dialog with generated password', q('#add-dialog').open && af.elements.password.value.length >= 12);
+    af.elements.display_name.value = 'Pat'; af.elements.email.value = 'pat@example.com'; af.requestSubmit();
+    await wait(300);
+    check('admin: user created', DB.users.some((u) => u.email === 'pat@example.com' && u.confirmed) && d.querySelectorAll('#user-rows tr').length === 4);
+
+    // Open Pat
+    const patId = DB.users.find((u) => u.email === 'pat@example.com').id;
+    q(`#user-rows tr[data-id="${patId}"]`).click();
+    await wait(200);
+    check('admin: drawer opens', q('#drawer').open && q('#d-email').textContent === 'pat@example.com');
+    const acct = q('#f-account'); acct.elements.display_name.value = 'Patricia'; acct.elements.role.value = 'admin'; acct.requestSubmit();
+    await wait(200);
+    check('admin: rename + role', DB.profiles.find((p) => p.id === patId).display_name === 'Patricia' && DB.profiles.find((p) => p.id === patId).role === 'admin');
+    const pf = q('#f-password'); pf.elements.password.value = 'patnewpass1'; pf.requestSubmit();
+    await wait(200);
+    check('admin: set password', DB.users.find((u) => u.id === patId).password === 'patnewpass1');
+    q('#btn-reset-email').click(); await wait(100);
+    check('admin: reset email', DB.emails.includes('pat@example.com'));
+    q('#btn-toggle-disabled').click(); await wait(200);
+    check('admin: disable', DB.profiles.find((p) => p.id === patId).disabled && DB.users.find((u) => u.id === patId).banned && q('#btn-toggle-disabled').textContent.includes('Enable'));
+    q('#btn-toggle-disabled').click(); await wait(200);
+    check('admin: enable', !DB.profiles.find((p) => p.id === patId).disabled);
+
+    // Edit macros & preferences
+    const pr = q('#f-prefs');
+    pr.elements.kcal.value = 1800; pr.elements.p.value = 140;
+    pr.requestSubmit(); await wait(150);
+    check('admin: partial targets rejected', !DB.user_data.find((r) => r.user_id === patId));
+    pr.elements.c.value = 180; pr.elements.f.value = 60; pr.elements.vegan.checked = true;
+    [...pr.elements.allergy].find((x) => x.value === 'peanut').checked = true;
+    pr.requestSubmit(); await wait(200);
+    const patData = (DB.user_data.find((r) => r.user_id === patId) || {}).data;
+    check('admin: macros & prefs saved', patData && patData.targets.kcal === 1800 && patData.prefs.diet.vegan && patData.prefs.diet.vegetarian && patData.prefs.allergies.includes('peanut'));
+
+    // Delete gating
+    check('admin: delete disabled until confirmed', q('#btn-delete').disabled);
+    const dc = q('#delete-confirm'); dc.value = 'PAT@example.com'; dc.dispatchEvent(new Event('input', { bubbles: true }));
+    check('admin: delete enabled after typing email', !q('#btn-delete').disabled);
+    q('#btn-delete').click(); await wait(200);
+    check('admin: user deleted', !DB.users.some((u) => u.id === patId) && !q('#drawer').open && d.querySelectorAll('#user-rows tr').length === 3);
+
+    // Self protections
+    const samId = DB.users.find((u) => u.email === 'sam@example.com').id;
+    q(`#user-rows tr[data-id="${samId}"]`).click(); await wait(200);
+    check('admin: self role locked, no delete, no disable', q('#f-account').elements.role.disabled && !q('#btn-delete') && q('#btn-toggle-disabled').disabled);
+    // Sam's own data visible
+    check('admin: shows user data summary', q('#f-prefs').elements.kcal.value === '2000' && q('#drawer-body').textContent.includes('Favourites'));
+    q('[data-close]').click();
+
+    // Admin session separate from app session
+    check('admin: separate session storage', !!localStorage.getItem('mm-admin-auth') && !localStorage.getItem('mm-auth'));
+    q('#btn-admin-signout').click(); await wait(200);
+    check('admin: sign out', !q('#admin-signin').hidden);
+
+    // Pat (new user created by admin) can now sign in to the main app? (deleted) -> use a fresh admin-created user
+  } catch (e) { L.push('ERROR ' + e.stack); }
+  check('no JS errors', errors.length === 0, errors.join(' | '));
+  document.getElementById('out').textContent = L.join('\n');
+})();
+</script></body></html>

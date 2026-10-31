@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <title>My Mac-ro's Admin</title>
+  <meta name="theme-color" content="#1f8a5b">
+  <link rel="icon" href="../icons/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body class="admin">
+  <header class="topbar admin-bar">
+    <div class="brand">
+      <img src="../icons/icon.svg" alt="" width="28" height="28">
+      <span>My Mac-ro's <em>Admin</em></span>
+    </div>
+    <div class="admin-me" id="admin-me" hidden>
+      <span id="admin-email"></span>
+      <button class="btn btn-ghost btn-sm" type="button" id="btn-admin-signout">Sign out</button>
+    </div>
+  </header>
+
+  <main class="admin-main">
+    <!-- Setup / sign-in -->
+    <section id="admin-setup" class="card narrow" hidden>
+      <h2>Accounts aren't set up yet</h2>
+      <p class="hint">Add your Supabase project details to <code>js/supabase-config.js</code> and follow the README section "Set up accounts (Supabase)".</p>
+    </section>
+
+    <section id="admin-signin" class="narrow" hidden>
+      <h1 class="view-title">Admin sign in</h1>
+      <form id="admin-signin-form" class="card auth-card" novalidate>
+        <label class="field"><span>Email</span><input type="email" name="email" autocomplete="email"></label>
+        <label class="field"><span>Password</span><input type="password" name="password" autocomplete="current-password"></label>
+        <p class="hint warn" id="admin-signin-error" role="alert"></p>
+        <button class="btn btn-primary btn-block" type="submit">Sign in</button>
+      </form>
+      <p class="hint">Only accounts with the admin role can sign in here. Forgot your password? Reset it from the main app's sign-in screen.</p>
+    </section>
+
+    <!-- Users -->
+    <section id="admin-users" hidden>
+      <div class="stats" id="stats"></div>
+
+      <div class="toolbar">
+        <input class="search" id="user-search" type="search" placeholder="Search name or email" autocomplete="off">
+        <select id="user-filter" aria-label="Filter users">
+          <option value="all">All users</option>
+          <option value="active">Active</option>
+          <option value="disabled">Disabled</option>
+          <option value="admin">Admins</option>
+          <option value="unconfirmed">Email not confirmed</option>
+        </select>
+        <button class="btn btn-ghost" type="button" id="btn-refresh">Refresh</button>
+        <button class="btn btn-primary" type="button" id="btn-add-user">+ Add user</button>
+      </div>
+
+      <div class="card table-card">
+        <table class="users">
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Role</th>
+              <th>Status</th>
+              <th>Last sign-in</th>
+              <th>Last active</th>
+              <th>Joined</th>
+            </tr>
+          </thead>
+          <tbody id="user-rows"></tbody>
+        </table>
+        <p class="hint empty-msg" id="user-empty" hidden></p>
+      </div>
+    </section>
+  </main>
+
+  <!-- User detail -->
+  <dialog class="drawer" id="drawer">
+    <div class="drawer-head">
+      <div>
+        <h2 id="d-name"></h2>
+        <p class="hint" id="d-email"></p>
+        <div class="badges" id="d-badges"></div>
+      </div>
+      <button class="icon-btn" type="button" data-close aria-label="Close">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
+      </button>
+    </div>
+    <div class="drawer-body" id="drawer-body"></div>
+  </dialog>
+
+  <!-- Add user -->
+  <dialog class="modal" id="add-dialog">
+    <form id="add-form" novalidate>
+      <div class="drawer-head">
+        <h2>Add user</h2>
+        <button class="icon-btn" type="button" data-close aria-label="Close">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
+        </button>
+      </div>
+      <div class="drawer-body form-grid">
+        <label class="field"><span>Name</span><input type="text" name="display_name" autocomplete="off"></label>
+        <label class="field"><span>Email</span><input type="email" name="email" autocomplete="off"></label>
+        <label class="field">
+          <span>Password (at least 8 characters)</span>
+          <div class="input-row">
+            <input type="text" name="password" autocomplete="off" spellcheck="false">
+            <button class="btn btn-ghost btn-sm" type="button" data-generate="password">Generate</button>
+          </div>
+        </label>
+        <label class="field">
+          <span>Role</span>
+          <select name="role"><option value="user">User</option><option value="admin">Admin</option></select>
+        </label>
+        <p class="hint">The account is ready to use straight away; no confirmation email is sent. Share the password with the user securely and ask them to change it under <b>Me → Change password</b>.</p>
+        <p class="hint warn" id="add-error" role="alert"></p>
+        <button class="btn btn-primary btn-block" type="submit">Create user</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="../js/foods.js"></script>
+  <script src="../js/recipes.js"></script>
+  <script src="../js/planner.js"></script>
+  <script src="../js/vendor/supabase-2.45.4.min.js"></script>
+  <script src="../js/supabase-config.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>
