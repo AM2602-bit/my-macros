@@ -53,13 +53,28 @@ function New-FtpRequest([string]$url, [string]$method) {
   $req.EnableSsl = [bool]$cfg.secure
   $req.UsePassive = $true
   $req.UseBinary = $true
-  $req.KeepAlive = $true
+  # A fresh connection per request: reusing one over TLS fails mid-upload on this host (451).
+  $req.KeepAlive = $false
   return $req
 }
 
 function Ensure-FtpDir([string]$url) {
   try { (New-FtpRequest $url ([System.Net.WebRequestMethods+Ftp]::MakeDirectory)).GetResponse().Close() }
   catch { } # already exists
+}
+
+# cPanel writes its own sections into the server's .htaccess (e.g. PHP settings).
+# Keep them when replacing the file with ours.
+function Merge-CpanelBlocks([byte[]]$local) {
+  $text = [Text.Encoding]::UTF8.GetString($local)
+  try {
+    $res = (New-FtpRequest "$base/.htaccess" ([System.Net.WebRequestMethods+Ftp]::DownloadFile)).GetResponse()
+    $remote = (New-Object IO.StreamReader($res.GetResponseStream())).ReadToEnd()
+    $res.Close()
+  } catch { return $local } # no existing file
+  $blocks = [regex]::Matches($remote, '(?ms)^# BEGIN cPanel-generated.*?^# END cPanel-generated[^\r\n]*') | ForEach-Object { $_.Value }
+  if (-not $blocks) { return $local }
+  return [Text.Encoding]::UTF8.GetBytes($text.TrimEnd() + "`n`n" + ($blocks -join "`n`n") + "`n")
 }
 
 $files = foreach ($item in $include) {
@@ -83,13 +98,24 @@ foreach ($f in $files) {
       if (-not $made[$acc]) { Ensure-FtpDir "$base/$acc"; $made[$acc] = $true }
     }
   }
-  $req = New-FtpRequest "$base/$rel" ([System.Net.WebRequestMethods+Ftp]::UploadFile)
   $bytes = [IO.File]::ReadAllBytes($f.FullName)
-  $req.ContentLength = $bytes.Length
-  $stream = $req.GetRequestStream()
-  $stream.Write($bytes, 0, $bytes.Length)
-  $stream.Close()
-  $req.GetResponse().Close()
+  if ($rel -eq '.htaccess') { $bytes = Merge-CpanelBlocks $bytes }
+  # This host intermittently drops transfers (451), so retry a few times.
+  for ($attempt = 1; ; $attempt++) {
+    try {
+      $req = New-FtpRequest "$base/$rel" ([System.Net.WebRequestMethods+Ftp]::UploadFile)
+      $req.ContentLength = $bytes.Length
+      $stream = $req.GetRequestStream()
+      $stream.Write($bytes, 0, $bytes.Length)
+      $stream.Close()
+      $req.GetResponse().Close()
+      break
+    } catch {
+      if ($attempt -ge 4) { throw }
+      Write-Host "  retrying $rel ($($_.Exception.InnerException.Message))"
+      Start-Sleep -Seconds (2 * $attempt)
+    }
+  }
   Write-Host "  uploaded $rel"
 }
 Write-Host 'Done.'
