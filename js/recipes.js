@@ -227,4 +227,204 @@ window.RECIPES = [
     extras: 'Smoked paprika, cumin, garlic powder, salt',
     steps: ['Cube tofu and sweet potato; chop zucchini and capsicum.', 'Toss everything except spinach with oil and spices on a tray, including drained chickpeas.', 'Roast at 210°C for 30–35 minutes, turning once.', 'Fold through spinach to wilt before serving.'],
   },
+
+  // ---------- Breakfast (set 2) ----------
+  {
+    id: 'choc-protein-porridge', slot: 'breakfast', name: 'Chocolate peanut protein porridge', mins: 8,
+    items: [['oats', 50, 'c'], ['milk', 250, 'v'], ['whey', 25, 'p'], ['cocoa', 8, 'v'], ['banana', 60, 'c'], ['peanutButter', 10, 'f']],
+    extras: 'Pinch of salt',
+    steps: ['Simmer oats in the milk for 4–5 minutes, stirring, until creamy.', 'Take off the heat and whisk in protein powder and cocoa (add a splash of water if thick).', 'Top with sliced banana and a swirl of peanut butter.'],
+  },
+  {
+    id: 'mango-yogurt-bowl', slot: 'breakfast', name: 'Mango & chia yoghurt bowl', mins: 5,
+    items: [['greekYogurt', 250, 'p'], ['mango', 120, 'c'], ['granola', 30, 'c'], ['chia', 10, 'f']],
+    extras: 'Lime zest',
+    steps: ['Dice the mango.', 'Spoon yoghurt into a bowl and top with mango, granola and chia seeds.', 'Finish with a little lime zest.'],
+  },
+  {
+    id: 'turkey-breakfast-tacos', slot: 'breakfast', name: 'Turkey & egg breakfast tacos', mins: 15,
+    items: [['cornTortilla', 52, 'c'], ['turkeyMince', 80, 'p'], ['egg', 50, 'f'], ['capsicum', 50, 'v'], ['spinach', 30, 'v'], ['avocado', 30, 'f']],
+    extras: 'Smoked paprika, cumin, hot sauce',
+    steps: ['Brown the turkey mince with paprika and cumin, breaking it up.', 'Add diced capsicum and spinach; cook 2 minutes.', 'Push to one side and scramble the egg in the same pan.', 'Warm tortillas and fill with turkey, egg and sliced avocado.'],
+  },
+  {
+    id: 'cottage-cheese-pancakes', slot: 'breakfast', name: 'Cottage cheese & oat pancakes', mins: 15,
+    items: [['cottage', 150, 'p'], ['oats', 50, 'c'], ['egg', 50, 'f'], ['blueberries', 80, 'v'], ['honey', 10, 'c']],
+    extras: '½ tsp baking powder, vanilla, cooking spray',
+    steps: ['Blend cottage cheese, oats, egg, baking powder and vanilla until smooth.', 'Cook small pancakes in a sprayed non-stick pan, about 2 minutes per side.', 'Serve with blueberries and a drizzle of honey.'],
+  },
+  {
+    id: 'salmon-scramble-ricecakes', slot: 'breakfast', name: 'Smoked salmon scramble on rice cakes', mins: 10,
+    items: [['egg', 100, 'f'], ['eggWhite', 100, 'p'], ['smokedSalmon', 50, 'p'], ['riceCakes', 30, 'c'], ['spinach', 30, 'v']],
+    extras: 'Chives, cracked pepper',
+    steps: ['Whisk eggs and egg whites with pepper.', 'Wilt spinach in a non-stick pan, then add the eggs and stir gently until just set.', 'Fold through torn smoked salmon and chives.', 'Pile onto rice cakes.'],
+  },
+  {
+    id: 'pb-banana-toast', slot: 'breakfast', name: 'Peanut butter banana toast with yoghurt', mins: 5,
+    items: [['bread', 80, 'c'], ['peanutButter', 15, 'f'], ['banana', 80, 'c'], ['greekYogurt', 150, 'p']],
+    extras: 'Cinnamon',
+    steps: ['Toast the bread and spread with peanut butter.', 'Top with sliced banana and a dusting of cinnamon.', 'Serve with a bowl of Greek yoghurt on the side.'],
+  },
+  {
+    id: 'pumpkin-spice-oats', slot: 'breakfast', name: 'Pumpkin spice overnight oats', mins: 10,
+    items: [['oats', 50, 'c'], ['pumpkin', 80, 'v'], ['greekYogurt', 150, 'p'], ['milk', 120, 'v'], ['almonds', 12, 'f'], ['honey', 8, 'c']],
+    extras: 'Cinnamon, nutmeg, ginger',
+    steps: ['Microwave diced pumpkin with a splash of water for 4–5 minutes until soft, then mash.', 'Stir mashed pumpkin, oats, yoghurt, milk, honey and spices together in a jar.', 'Refrigerate overnight and top with chopped almonds.'],
+  },
+  {
+    id: 'tofu-breakfast-wrap', slot: 'breakfast', name: 'Tofu scramble breakfast wrap', mins: 15,
+    items: [['wrap', 60, 'c'], ['tofu', 150, 'p'], ['capsicum', 50, 'v'], ['spinach', 30, 'v'], ['avocado', 40, 'f'], ['passata', 30, 'v']],
+    extras: 'Turmeric, smoked paprika, garlic powder',
+    steps: ['Crumble tofu into a non-stick pan with the spices and cook for 5 minutes.', 'Add diced capsicum and spinach; cook until soft.', 'Warm the wrap, spread with passata, fill with the scramble and avocado, and roll up.'],
+  },
+
+  // ---------- Lunch (set 2) ----------
+  {
+    id: 'chicken-noodle-salad', slot: 'lunch', name: 'Chicken rice-noodle salad with peanut dressing', mins: 20,
+    items: [['chicken', 140, 'p'], ['riceNoodles', 150, 'c'], ['carrot', 50, 'v'], ['cucumber', 60, 'v'], ['saladLeaves', 30, 'v'], ['peanutButter', 12, 'f'], ['lemon', 10, 'v'], ['soySauce', 10, 'v']],
+    extras: 'Fresh mint, coriander, chilli',
+    steps: ['Poach or grill the chicken, then shred.', 'Soak or boil the noodles per the packet; rinse under cold water.', 'Whisk peanut butter, lime juice, soy sauce and a little warm water into a dressing.', 'Toss noodles, grated carrot, cucumber, leaves and herbs with the chicken and dressing.'],
+  },
+  {
+    id: 'turkey-taco-bowl', slot: 'lunch', name: 'Turkey taco rice bowl', mins: 20,
+    items: [['turkeyMince', 130, 'p'], ['brownRice', 150, 'c'], ['corn', 60, 'c'], ['capsicum', 50, 'v'], ['cherryTomato', 60, 'v'], ['avocado', 40, 'f'], ['lemon', 10, 'v']],
+    extras: 'Taco spice (cumin, paprika, oregano, chilli)',
+    steps: ['Brown the turkey mince with the taco spices and a splash of water.', 'Warm the rice and corn.', 'Build bowls with rice, turkey, corn, capsicum, tomatoes and avocado.', 'Squeeze over lime juice.'],
+  },
+  {
+    id: 'tuna-corn-pasta-salad', slot: 'lunch', name: 'Tuna, corn & spinach pasta salad', mins: 15,
+    items: [['pasta', 70, 'c'], ['tuna', 120, 'p'], ['corn', 50, 'v'], ['cherryTomato', 60, 'v'], ['greekYogurt', 50, 'v'], ['oliveOil', 6, 'f'], ['spinach', 30, 'v']],
+    extras: 'Lemon zest, dill, salt, pepper',
+    steps: ['Cook pasta, then cool under cold water.', 'Mix yoghurt, olive oil, lemon zest, dill and seasoning into a dressing.', 'Toss pasta with tuna, corn, halved tomatoes, spinach and the dressing.'],
+  },
+  {
+    id: 'prawn-mango-quinoa', slot: 'lunch', name: 'Prawn, mango & quinoa salad', mins: 20,
+    items: [['prawns', 140, 'p'], ['quinoa', 130, 'c'], ['mango', 80, 'c'], ['cucumber', 60, 'v'], ['saladLeaves', 30, 'v'], ['avocado', 40, 'f'], ['lemon', 10, 'v']],
+    extras: 'Chilli flakes, coriander',
+    steps: ['Pan-fry prawns for 2–3 minutes until pink.', 'Dice mango, cucumber and avocado.', 'Toss quinoa, leaves, mango and cucumber with lime juice.', 'Top with prawns, avocado, chilli and coriander.'],
+  },
+  {
+    id: 'pork-noodle-stir-fry', slot: 'lunch', name: 'Pork & veg rice-noodle stir-fry', mins: 20,
+    items: [['porkLoin', 140, 'p'], ['riceNoodles', 160, 'c'], ['stirFryVeg', 150, 'v'], ['soySauce', 15, 'v'], ['oliveOil', 6, 'f'], ['garlic', 5, 'v']],
+    extras: 'Ginger, chilli, spring onion',
+    steps: ['Slice pork thinly and stir-fry in hot oil until browned; set aside.', 'Stir-fry vegetables with garlic and ginger for 3 minutes.', 'Add noodles, pork and soy sauce; toss until hot.', 'Finish with spring onion.'],
+  },
+  {
+    id: 'chicken-caesar-wrap', slot: 'lunch', name: 'Chicken caesar-style wrap', mins: 15,
+    items: [['wrap', 60, 'c'], ['chicken', 120, 'p'], ['saladLeaves', 40, 'v'], ['parmesan', 10, 'f'], ['greekYogurt', 40, 'v'], ['lemon', 5, 'v']],
+    extras: 'Garlic powder, Dijon mustard, pepper',
+    steps: ['Grill and slice the chicken.', 'Mix yoghurt, lemon juice, a little mustard, garlic powder and grated parmesan into a creamy dressing.', 'Toss leaves in the dressing, then fill the wrap with leaves and chicken and roll up.'],
+  },
+  {
+    id: 'pumpkin-lentil-feta-salad', slot: 'lunch', name: 'Roast pumpkin, lentil & feta salad', mins: 35,
+    items: [['lentils', 150, 'p'], ['pumpkin', 200, 'c'], ['spinach', 40, 'v'], ['feta', 30, 'f'], ['oliveOil', 6, 'f'], ['lemon', 10, 'v']],
+    extras: 'Cumin, salt, pepper',
+    steps: ['Cube pumpkin, toss with half the oil and cumin, and roast at 200°C for 25 minutes.', 'Whisk the remaining oil with lemon juice and seasoning.', 'Toss lentils, spinach and warm pumpkin with the dressing.', 'Crumble over feta.'],
+  },
+  {
+    id: 'chickpea-hummus-bowl', slot: 'lunch', name: 'Smashed chickpea & hummus quinoa bowl', mins: 15,
+    items: [['chickpeas', 120, 'p'], ['quinoa', 120, 'c'], ['cucumber', 60, 'v'], ['cherryTomato', 60, 'v'], ['hummus', 40, 'f'], ['saladLeaves', 30, 'v'], ['lemon', 10, 'v']],
+    extras: 'Smoked paprika, parsley',
+    steps: ['Roughly smash chickpeas with lemon juice, paprika and a pinch of salt.', 'Arrange quinoa, leaves, cucumber and tomatoes in a bowl.', 'Top with the smashed chickpeas and a spoonful of hummus.'],
+  },
+
+  // ---------- Snacks (set 2) ----------
+  {
+    id: 'choc-peanut-bites', slot: 'snack', name: 'Choc peanut protein bites', mins: 10,
+    items: [['oats', 30, 'c'], ['whey', 20, 'p'], ['peanutButter', 15, 'f'], ['honey', 10, 'c'], ['cocoa', 5, 'v']],
+    extras: 'Splash of milk or water to bind',
+    steps: ['Mix everything in a bowl, adding liquid a teaspoon at a time until it holds together.', 'Roll into small balls.', 'Chill for 20 minutes (keeps 5 days in the fridge).'],
+  },
+  {
+    id: 'cottage-pineapple', slot: 'snack', name: 'Cottage cheese with pineapple & almonds', mins: 2,
+    items: [['cottage', 180, 'p'], ['pineapple', 100, 'c'], ['almonds', 8, 'f']],
+    extras: '',
+    steps: ['Spoon cottage cheese into a bowl.', 'Top with pineapple pieces and chopped almonds.'],
+  },
+  {
+    id: 'turkey-roll-ups', slot: 'snack', name: 'Turkey, mozzarella & cucumber roll-ups', mins: 5,
+    items: [['turkey', 100, 'p'], ['mozzarella', 20, 'f'], ['cucumber', 80, 'v'], ['riceCakes', 20, 'c']],
+    extras: 'Mustard (optional)',
+    steps: ['Lay out turkey slices and sprinkle with mozzarella.', 'Add cucumber sticks and roll up tightly.', 'Serve with rice cakes.'],
+  },
+  {
+    id: 'mango-lassi', slot: 'snack', name: 'Mango protein lassi', mins: 5,
+    items: [['greekYogurt', 200, 'p'], ['mango', 120, 'c'], ['milk', 100, 'v'], ['chia', 5, 'f']],
+    extras: 'Cardamom, ice',
+    steps: ['Blend yoghurt, mango, milk, cardamom and ice until smooth.', 'Pour and sprinkle with chia seeds.'],
+  },
+  {
+    id: 'choc-yogurt-pot', slot: 'snack', name: 'Chocolate yoghurt pot with strawberries', mins: 3,
+    items: [['greekYogurt', 200, 'p'], ['cocoa', 6, 'v'], ['honey', 10, 'c'], ['strawberries', 100, 'v'], ['almonds', 10, 'f']],
+    extras: '',
+    steps: ['Stir cocoa and honey through the yoghurt until smooth.', 'Top with sliced strawberries and chopped almonds.'],
+  },
+  {
+    id: 'veggie-egg-muffins', slot: 'snack', name: 'Veggie egg muffins', mins: 25,
+    items: [['egg', 100, 'f'], ['eggWhite', 100, 'p'], ['capsicum', 40, 'v'], ['spinach', 30, 'v'], ['mozzarella', 15, 'f'], ['riceCakes', 20, 'c']],
+    extras: 'Salt, pepper, cooking spray',
+    steps: ['Whisk eggs and egg whites with seasoning.', 'Divide diced capsicum, spinach and mozzarella between sprayed muffin holes; pour over the egg.', 'Bake at 180°C for 18–20 minutes.', 'Serve with rice cakes (muffins keep 4 days in the fridge).'],
+  },
+  {
+    id: 'vegan-choc-smoothie', slot: 'snack', name: 'Vegan chocolate banana smoothie', mins: 5,
+    items: [['soyMilk', 250, 'v'], ['plantProtein', 25, 'p'], ['banana', 100, 'c'], ['cocoa', 6, 'v'], ['peanutButter', 8, 'f']],
+    extras: 'Ice',
+    steps: ['Blend everything with ice until smooth.'],
+  },
+  {
+    id: 'edamame-carrot-hummus', slot: 'snack', name: 'Edamame, carrot sticks & hummus', mins: 5,
+    items: [['edamame', 100, 'p'], ['carrot', 100, 'v'], ['hummus', 40, 'f'], ['riceCakes', 20, 'c']],
+    extras: 'Sea salt, chilli flakes',
+    steps: ['Steam or microwave the edamame and season.', 'Cut carrots into sticks.', 'Serve with hummus and rice cakes.'],
+  },
+
+  // ---------- Dinner (set 2) ----------
+  {
+    id: 'turkey-meatball-pasta', slot: 'dinner', name: 'Turkey meatballs in tomato sauce with pasta', mins: 35,
+    items: [['turkeyMince', 150, 'p'], ['pasta', 75, 'c'], ['passata', 200, 'v'], ['onion', 40, 'v'], ['garlic', 5, 'v'], ['parmesan', 10, 'f'], ['spinach', 40, 'v']],
+    extras: 'Dried oregano, basil, chilli flakes',
+    steps: ['Mix turkey mince with half the garlic, oregano and seasoning; roll into small meatballs.', 'Brown meatballs in a non-stick pan, then add diced onion and the rest of the garlic.', 'Pour in passata and simmer 12 minutes; stir through spinach.', 'Serve over pasta with parmesan.'],
+  },
+  {
+    id: 'pork-pineapple-rice', slot: 'dinner', name: 'Sweet & sour pork with pineapple rice', mins: 25,
+    items: [['porkLoin', 150, 'p'], ['whiteRice', 170, 'c'], ['pineapple', 80, 'c'], ['capsicum', 80, 'v'], ['onion', 40, 'v'], ['soySauce', 15, 'v'], ['oliveOil', 8, 'f']],
+    extras: '1 tbsp vinegar, 1 tsp cornflour, ginger',
+    steps: ['Stir-fry sliced pork in the oil until browned.', 'Add capsicum and onion; cook 3 minutes.', 'Mix soy sauce, vinegar, cornflour, ginger and a splash of pineapple juice; add with the pineapple and simmer until glossy.', 'Serve over rice.'],
+  },
+  {
+    id: 'chicken-fajitas', slot: 'dinner', name: 'Chicken fajitas with corn tortillas', mins: 25,
+    items: [['chicken', 150, 'p'], ['cornTortilla', 78, 'c'], ['capsicum', 120, 'v'], ['onion', 60, 'v'], ['avocado', 40, 'f'], ['greekYogurt', 40, 'v'], ['lemon', 10, 'v']],
+    extras: 'Fajita spice (paprika, cumin, garlic, chilli)',
+    steps: ['Slice chicken, capsicum and onion into strips and toss with the spice.', 'Cook in a hot pan until chicken is done and veg is charred at the edges.', 'Warm tortillas and fill with the chicken mix, avocado and a dollop of yoghurt.', 'Squeeze over lime.'],
+  },
+  {
+    id: 'chicken-cauli-fried-rice', slot: 'dinner', name: 'Chicken cauliflower fried rice', mins: 25,
+    items: [['chicken', 150, 'p'], ['cauliflower', 200, 'v'], ['whiteRice', 80, 'c'], ['egg', 50, 'f'], ['carrot', 50, 'v'], ['soySauce', 15, 'v'], ['oliveOil', 6, 'f']],
+    extras: 'Garlic, ginger, spring onion',
+    steps: ['Pulse cauliflower in a food processor until rice-sized (or grate it).', 'Stir-fry diced chicken in the oil until cooked; push aside and scramble the egg.', 'Add cauliflower, rice, diced carrot, garlic and ginger; stir-fry 5 minutes.', 'Season with soy sauce and top with spring onion.'],
+  },
+  {
+    id: 'teriyaki-salmon-noodles', slot: 'dinner', name: 'Teriyaki-style salmon noodle bowl', mins: 25,
+    items: [['salmon', 140, 'p'], ['riceNoodles', 150, 'c'], ['broccoli', 100, 'v'], ['carrot', 50, 'v'], ['soySauce', 15, 'v'], ['honey', 8, 'c'], ['oliveOil', 4, 'f']],
+    extras: 'Ginger, garlic, sesame seeds (optional)',
+    steps: ['Mix soy sauce, honey, grated ginger and garlic into a glaze.', 'Pan-fry salmon in the oil for 3 minutes per side, then brush with glaze for the last minute.', 'Steam broccoli and carrot; cook noodles per the packet.', 'Serve salmon over noodles and veg with any remaining glaze.'],
+  },
+  {
+    id: 'beef-broccoli-stir-fry', slot: 'dinner', name: 'Beef & broccoli garlic stir-fry', mins: 20,
+    items: [['beefMince', 150, 'p'], ['brownRice', 160, 'c'], ['broccoli', 150, 'v'], ['soySauce', 15, 'v'], ['garlic', 5, 'v'], ['oliveOil', 6, 'f']],
+    extras: 'Ginger, chilli, spring onion',
+    steps: ['Brown the beef mince in the oil, breaking it up.', 'Add broccoli florets, garlic and ginger with a splash of water; cover for 3 minutes.', 'Stir in soy sauce and toss.', 'Serve over rice with spring onion.'],
+  },
+  {
+    id: 'stuffed-sweet-potato', slot: 'dinner', name: 'Black bean & cheese stuffed sweet potato', mins: 45,
+    items: [['sweetPotato', 250, 'c'], ['blackBeans', 120, 'p'], ['corn', 50, 'v'], ['mozzarella', 30, 'f'], ['cherryTomato', 60, 'v'], ['greekYogurt', 40, 'v']],
+    extras: 'Cumin, smoked paprika, coriander',
+    steps: ['Prick sweet potato and bake at 200°C for 40 minutes (or microwave 8–10 minutes) until soft.', 'Warm beans and corn with the spices.', 'Split the potato, pile in the beans, top with mozzarella and grill until melted.', 'Finish with tomatoes, yoghurt and coriander.'],
+  },
+  {
+    id: 'pumpkin-tofu-curry', slot: 'dinner', name: 'Pumpkin, tofu & chickpea curry', mins: 35,
+    items: [['tofu', 150, 'p'], ['pumpkin', 200, 'v'], ['chickpeas', 80, 'c'], ['brownRice', 120, 'c'], ['coconutMilk', 100, 'f'], ['spinach', 50, 'v'], ['onion', 40, 'v']],
+    extras: 'Curry powder, garlic, ginger',
+    steps: ['Soften diced onion with garlic and ginger in a splash of water; stir in curry powder.', 'Add cubed pumpkin, coconut milk and a little water; simmer 15 minutes.', 'Add cubed tofu and chickpeas; simmer 5 minutes, then stir through spinach.', 'Serve over rice.'],
+  },
 ];

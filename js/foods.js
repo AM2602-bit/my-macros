@@ -18,6 +18,18 @@ window.FOODS = {
   eggWhite:      { name: 'Egg whites',               kcal: 52,  p: 10.9, c: 0.7,  f: 0.2,  flags: ['egg'] },
 
   chicken:       { name: 'Chicken breast (raw)',     kcal: 120, p: 22.5, c: 0,    f: 2.6,  flags: ['meat'] },
+  turkeyMince:   { name: 'Lean turkey mince (raw)',  kcal: 148, p: 19.7, c: 0,    f: 7.7,  flags: ['meat'] },
+  porkLoin:      { name: 'Pork fillet (raw)',        kcal: 120, p: 21.0, c: 0,    f: 3.5,  flags: ['meat'] },
+  mozzarella:    { name: 'Light mozzarella',         kcal: 254, p: 24.0, c: 2.8,  f: 16.0, flags: ['dairy'] },
+  cornTortilla:  { name: 'Corn tortillas',           kcal: 218, p: 5.7,  c: 44.6, f: 2.9,  flags: [], unit: { one: 'tortilla', many: 'tortillas', g: 26, step: 1 } },
+  riceNoodles:   { name: 'Rice noodles (cooked)',    kcal: 108, p: 1.8,  c: 24.0, f: 0.2,  flags: [] },
+  cauliflower:   { name: 'Cauliflower',              kcal: 25,  p: 1.9,  c: 5.0,  f: 0.3,  flags: [] },
+  pumpkin:       { name: 'Butternut pumpkin',        kcal: 45,  p: 1.0,  c: 11.7, f: 0.1,  flags: [] },
+  carrot:        { name: 'Carrot',                   kcal: 41,  p: 0.9,  c: 9.6,  f: 0.2,  flags: [] },
+  corn:          { name: 'Corn kernels',             kcal: 86,  p: 3.3,  c: 19.0, f: 1.2,  flags: [] },
+  mango:         { name: 'Mango',                    kcal: 60,  p: 0.8,  c: 15.0, f: 0.4,  flags: [] },
+  pineapple:     { name: 'Pineapple',                kcal: 50,  p: 0.5,  c: 13.1, f: 0.1,  flags: [] },
+  cocoa:         { name: 'Cocoa powder',             kcal: 228, p: 19.6, c: 57.9, f: 13.7, flags: [] },
   beefMince:     { name: 'Lean beef mince 5% (raw)', kcal: 137, p: 21.0, c: 0,    f: 5.0,  flags: ['meat'] },
   turkey:        { name: 'Sliced turkey breast',     kcal: 104, p: 21.0, c: 2.0,  f: 1.7,  flags: ['meat'] },
   salmon:        { name: 'Salmon fillet (raw)',      kcal: 208, p: 20.0, c: 0,    f: 13.4, flags: ['fish'] },
@@ -76,12 +88,12 @@ window.FOODS = {
 
 // Grouping for the food preferences screen.
 window.FOOD_GROUPS = [
-  ['Meat & seafood',     ['chicken', 'beefMince', 'turkey', 'salmon', 'smokedSalmon', 'tuna', 'prawns', 'cod']],
-  ['Dairy & eggs',       ['milk', 'greekYogurt', 'cottage', 'feta', 'cheddar', 'parmesan', 'egg', 'eggWhite', 'whey']],
+  ['Meat & seafood',     ['chicken', 'beefMince', 'turkey', 'salmon', 'smokedSalmon', 'tuna', 'prawns', 'cod', 'turkeyMince', 'porkLoin']],
+  ['Dairy & eggs',       ['milk', 'greekYogurt', 'cottage', 'feta', 'cheddar', 'parmesan', 'egg', 'eggWhite', 'whey', 'mozzarella']],
   ['Plant protein',      ['tofu', 'edamame', 'lentils', 'chickpeas', 'blackBeans', 'soyMilk', 'plantProtein']],
-  ['Grains & starches',  ['oats', 'bread', 'wrap', 'pasta', 'brownRice', 'whiteRice', 'quinoa', 'sweetPotato', 'potato', 'riceCakes', 'granola']],
-  ['Fruit',              ['banana', 'blueberries', 'strawberries', 'apple']],
-  ['Vegetables',         ['spinach', 'saladLeaves', 'cherryTomato', 'cucumber', 'capsicum', 'onion', 'garlic', 'mushrooms', 'zucchini', 'broccoli', 'greenBeans', 'stirFryVeg', 'passata']],
+  ['Grains & starches',  ['oats', 'bread', 'wrap', 'pasta', 'brownRice', 'whiteRice', 'quinoa', 'sweetPotato', 'potato', 'riceCakes', 'granola', 'cornTortilla', 'riceNoodles']],
+  ['Fruit',              ['banana', 'blueberries', 'strawberries', 'apple', 'mango', 'pineapple']],
+  ['Vegetables',         ['spinach', 'saladLeaves', 'cherryTomato', 'cucumber', 'capsicum', 'onion', 'garlic', 'mushrooms', 'zucchini', 'broccoli', 'greenBeans', 'stirFryVeg', 'passata', 'cauliflower', 'pumpkin', 'carrot', 'corn']],
   ['Nuts, seeds & fats', ['avocado', 'oliveOil', 'peanutButter', 'almonds', 'chia', 'hummus', 'coconutMilk']],
-  ['Extras',             ['honey', 'darkChoc', 'lemon', 'soySauce']],
+  ['Extras',             ['honey', 'darkChoc', 'lemon', 'soySauce', 'cocoa']],
 ];
