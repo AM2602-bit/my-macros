@@ -72,6 +72,7 @@
   }
 
   function show(id) {
+    $('#admin-loading').hidden = true;
     ['#admin-setup', '#admin-signin', '#admin-users'].forEach((s) => { $(s).hidden = s !== id; });
     $('#admin-me').hidden = id !== '#admin-users';
   }
