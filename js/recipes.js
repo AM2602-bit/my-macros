@@ -427,4 +427,252 @@ window.RECIPES = [
     extras: 'Curry powder, garlic, ginger',
     steps: ['Soften diced onion with garlic and ginger in a splash of water; stir in curry powder.', 'Add cubed pumpkin, coconut milk and a little water; simmer 15 minutes.', 'Add cubed tofu and chickpeas; simmer 5 minutes, then stir through spinach.', 'Serve over rice.'],
   },
+
+  // ---------- Breakfast (set 3) ----------
+  {
+    id: 'berry-yogurt-smoothie-bowl', slot: 'breakfast', name: 'Berry yoghurt smoothie bowl', mins: 5,
+    items: [['greekYogurt', 200, 'p'], ['strawberries', 100, 'v'], ['banana', 80, 'c'], ['granola', 25, 'c'], ['chia', 10, 'f']],
+    extras: 'Ice',
+    steps: ['Blend yoghurt, half the strawberries, the banana and a little ice until thick.', 'Pour into a bowl and top with the remaining strawberries, granola and chia.'],
+  },
+  {
+    id: 'vegan-pb-overnight-oats', slot: 'breakfast', name: 'Vegan peanut butter overnight oats', mins: 5,
+    items: [['oats', 50, 'c'], ['soyMilk', 200, 'v'], ['plantProtein', 20, 'p'], ['peanutButter', 12, 'f'], ['banana', 50, 'c']],
+    extras: 'Cinnamon, vanilla',
+    steps: ['Stir oats, protein powder, cinnamon and vanilla into the soy milk.', 'Swirl through the peanut butter, cover and refrigerate overnight.', 'Top with sliced banana.'],
+  },
+  {
+    id: 'tofu-potato-hash', slot: 'breakfast', name: 'Tofu, potato & capsicum hash', mins: 25,
+    items: [['tofu', 180, 'p'], ['potato', 150, 'c'], ['capsicum', 50, 'v'], ['spinach', 30, 'v'], ['oliveOil', 6, 'f']],
+    extras: 'Smoked paprika, turmeric, salt, pepper',
+    steps: ['Dice potato small and microwave 4 minutes to par-cook.', 'Fry potato in the oil until golden, about 8 minutes.', 'Add crumbled tofu, diced capsicum and spices; cook 5 minutes.', 'Stir through spinach until wilted.'],
+  },
+  {
+    id: 'edamame-avo-toast', slot: 'breakfast', name: 'Smashed edamame & avocado toast', mins: 10,
+    items: [['bread', 80, 'c'], ['edamame', 80, 'p'], ['avocado', 50, 'f'], ['lemon', 5, 'v'], ['cherryTomato', 50, 'v']],
+    extras: 'Chilli flakes, sea salt',
+    steps: ['Microwave edamame until hot, then roughly mash with avocado, lemon juice and salt.', 'Toast the bread and pile on the mash.', 'Top with halved tomatoes and chilli flakes.'],
+  },
+  {
+    id: 'apple-cinnamon-protein-oats', slot: 'breakfast', name: 'Apple cinnamon protein oats', mins: 8,
+    items: [['oats', 50, 'c'], ['milk', 200, 'v'], ['whey', 20, 'p'], ['apple', 100, 'c'], ['almonds', 10, 'f']],
+    extras: 'Cinnamon',
+    steps: ['Simmer oats and grated apple in the milk for 4–5 minutes.', 'Stir in protein powder and cinnamon off the heat.', 'Top with chopped almonds.'],
+  },
+  {
+    id: 'egg-white-feta-wrap', slot: 'breakfast', name: 'Egg white, mushroom & feta wrap', mins: 12,
+    items: [['wrap', 60, 'c'], ['eggWhite', 150, 'p'], ['egg', 50, 'f'], ['spinach', 30, 'v'], ['mushrooms', 50, 'v'], ['feta', 15, 'f']],
+    extras: 'Pepper, chives',
+    steps: ['Cook sliced mushrooms in a non-stick pan until golden; add spinach.', 'Pour in whisked egg and egg whites and cook as a thin omelette.', 'Crumble over feta, slide onto the wrap and roll up.'],
+  },
+  {
+    id: 'quinoa-berry-bowl', slot: 'breakfast', name: 'Warm quinoa & blueberry breakfast bowl', mins: 10,
+    items: [['quinoa', 120, 'c'], ['soyMilk', 150, 'v'], ['plantProtein', 20, 'p'], ['blueberries', 80, 'v'], ['almonds', 12, 'f']],
+    extras: 'Cinnamon, vanilla',
+    steps: ['Warm cooked quinoa with the soy milk, cinnamon and vanilla for 3–4 minutes.', 'Stir in protein powder off the heat.', 'Top with blueberries and chopped almonds.'],
+  },
+  {
+    id: 'pb-banana-rice-cakes', slot: 'breakfast', name: 'Peanut butter banana rice cakes with yoghurt', mins: 5,
+    items: [['riceCakes', 30, 'c'], ['peanutButter', 15, 'f'], ['banana', 80, 'c'], ['greekYogurt', 150, 'p']],
+    extras: 'Cinnamon',
+    steps: ['Spread rice cakes with peanut butter and top with sliced banana.', 'Dust with cinnamon and serve with Greek yoghurt.'],
+  },
+  {
+    id: 'corn-spinach-fritters', slot: 'breakfast', name: 'Corn & spinach fritters', mins: 20,
+    items: [['corn', 100, 'c'], ['egg', 50, 'f'], ['eggWhite', 60, 'p'], ['oats', 25, 'c'], ['spinach', 30, 'v'], ['greekYogurt', 50, 'v']],
+    extras: 'Paprika, salt, cooking spray',
+    steps: ['Blitz oats to a flour, then mix with egg, egg white, corn, chopped spinach and paprika.', 'Cook spoonfuls in a sprayed non-stick pan, 2–3 minutes per side.', 'Serve with a dollop of yoghurt.'],
+  },
+  {
+    id: 'tropical-vegan-smoothie', slot: 'breakfast', name: 'Tropical mango protein smoothie', mins: 5,
+    items: [['soyMilk', 250, 'v'], ['plantProtein', 25, 'p'], ['mango', 100, 'c'], ['pineapple', 60, 'v'], ['chia', 10, 'f']],
+    extras: 'Ice, lime juice',
+    steps: ['Blend everything with ice and a squeeze of lime until smooth.'],
+  },
+
+  // ---------- Lunch (set 3) ----------
+  {
+    id: 'black-bean-quinoa-salad', slot: 'lunch', name: 'Black bean, corn & quinoa salad', mins: 15,
+    items: [['blackBeans', 130, 'p'], ['quinoa', 120, 'c'], ['corn', 50, 'v'], ['capsicum', 50, 'v'], ['avocado', 40, 'f'], ['lemon', 10, 'v']],
+    extras: 'Cumin, coriander, chilli',
+    steps: ['Rinse beans and dice capsicum and avocado.', 'Toss quinoa, beans, corn and capsicum with lime juice, cumin and salt.', 'Top with avocado and coriander.'],
+  },
+  {
+    id: 'tofu-noodle-salad', slot: 'lunch', name: 'Crispy tofu noodle salad', mins: 25,
+    items: [['tofu', 150, 'p'], ['riceNoodles', 150, 'c'], ['carrot', 50, 'v'], ['cucumber', 60, 'v'], ['peanutButter', 12, 'f'], ['soySauce', 10, 'v'], ['lemon', 10, 'v']],
+    extras: 'Mint, chilli, garlic',
+    steps: ['Cube tofu and pan-fry or air-fry until crisp.', 'Cook noodles and rinse under cold water.', 'Whisk peanut butter, soy sauce, lime juice, garlic and warm water into a dressing.', 'Toss noodles, grated carrot and cucumber with the dressing; top with tofu and mint.'],
+  },
+  {
+    id: 'lentil-vegetable-soup', slot: 'lunch', name: 'Hearty lentil & vegetable soup', mins: 35,
+    items: [['lentils', 180, 'p'], ['potato', 120, 'c'], ['carrot', 60, 'v'], ['onion', 40, 'v'], ['passata', 150, 'v'], ['oliveOil', 6, 'f'], ['spinach', 30, 'v']],
+    extras: 'Garlic, cumin, smoked paprika, stock cube, water',
+    steps: ['Soften diced onion and carrot in the oil with garlic and spices.', 'Add diced potato, passata, stock and enough water to cover; simmer 20 minutes.', 'Stir in lentils and spinach and heat through.', 'Season to taste (freezes well).'],
+  },
+  {
+    id: 'egg-salad-wrap', slot: 'lunch', name: 'Creamy egg salad wrap', mins: 15,
+    items: [['wrap', 60, 'c'], ['egg', 100, 'f'], ['greekYogurt', 60, 'p'], ['saladLeaves', 30, 'v'], ['cucumber', 50, 'v']],
+    extras: 'Dijon mustard, chives, pepper',
+    steps: ['Boil eggs for 9 minutes, cool and peel.', 'Mash eggs with yoghurt, a little mustard, chives and pepper.', 'Fill the wrap with leaves, cucumber and egg salad, then roll up.'],
+  },
+  {
+    id: 'mediterranean-chickpea-salad', slot: 'lunch', name: 'Mediterranean chickpea & feta salad', mins: 15,
+    items: [['chickpeas', 130, 'p'], ['quinoa', 100, 'c'], ['cucumber', 60, 'v'], ['cherryTomato', 80, 'v'], ['feta', 30, 'f'], ['oliveOil', 6, 'f'], ['lemon', 10, 'v']],
+    extras: 'Dried oregano, red onion, parsley',
+    steps: ['Whisk olive oil, lemon juice and oregano into a dressing.', 'Toss chickpeas, quinoa, cucumber, tomatoes and herbs with the dressing.', 'Crumble over feta.'],
+  },
+  {
+    id: 'chicken-pumpkin-quinoa', slot: 'lunch', name: 'Chicken, roast pumpkin & quinoa bowl', mins: 35,
+    items: [['chicken', 130, 'p'], ['pumpkin', 150, 'v'], ['quinoa', 120, 'c'], ['spinach', 40, 'v'], ['feta', 20, 'f'], ['oliveOil', 5, 'f']],
+    extras: 'Paprika, cumin, lemon',
+    steps: ['Roast cubed pumpkin with the oil and spices at 200°C for 25 minutes.', 'Grill or pan-fry the seasoned chicken and slice.', 'Toss quinoa, spinach and pumpkin; top with chicken and crumbled feta.'],
+  },
+  {
+    id: 'tuna-rice-bowl', slot: 'lunch', name: 'Tuna, edamame & avocado rice bowl', mins: 10,
+    items: [['tuna', 120, 'p'], ['whiteRice', 160, 'c'], ['edamame', 50, 'v'], ['cucumber', 60, 'v'], ['avocado', 40, 'f'], ['soySauce', 10, 'v']],
+    extras: 'Sriracha, spring onion',
+    steps: ['Warm the rice and edamame.', 'Arrange rice, tuna, edamame, cucumber and avocado in a bowl.', 'Drizzle with soy sauce and a little sriracha.'],
+  },
+  {
+    id: 'turkey-avo-sandwich', slot: 'lunch', name: 'Turkey, avocado & tomato sandwich', mins: 5,
+    items: [['bread', 80, 'c'], ['turkey', 100, 'p'], ['saladLeaves', 30, 'v'], ['cherryTomato', 50, 'v'], ['avocado', 40, 'f']],
+    extras: 'Mustard, pepper',
+    steps: ['Spread one slice with mashed avocado and the other with mustard.', 'Layer turkey, leaves and sliced tomato, season and close.'],
+  },
+  {
+    id: 'beef-nacho-bowl', slot: 'lunch', name: 'Baked tortilla beef nacho bowl', mins: 20,
+    items: [['beefMince', 120, 'p'], ['cornTortilla', 52, 'c'], ['blackBeans', 60, 'c'], ['cherryTomato', 60, 'v'], ['cheddar', 15, 'f'], ['greekYogurt', 30, 'v'], ['lemon', 5, 'v']],
+    extras: 'Taco spice, coriander',
+    steps: ['Cut tortillas into wedges and bake at 190°C for 8 minutes until crisp.', 'Brown the mince with taco spice; stir in beans.', 'Pile chips into a bowl, top with mince, cheese, tomatoes and yoghurt.', 'Finish with lime and coriander.'],
+  },
+  {
+    id: 'satay-chickpea-wrap', slot: 'lunch', name: 'Satay chickpea & carrot wrap', mins: 10,
+    items: [['wrap', 60, 'c'], ['chickpeas', 120, 'p'], ['carrot', 50, 'v'], ['saladLeaves', 30, 'v'], ['peanutButter', 12, 'f'], ['lemon', 5, 'v']],
+    extras: 'Soy sauce, chilli, warm water',
+    steps: ['Whisk peanut butter, lime juice, a splash of soy sauce and warm water into a satay sauce.', 'Roughly mash chickpeas into half the sauce.', 'Fill the wrap with leaves, grated carrot and chickpeas; drizzle the rest of the sauce and roll up.'],
+  },
+
+  // ---------- Snacks (set 3) ----------
+  {
+    id: 'roasted-chickpeas-apple', slot: 'snack', name: 'Crunchy roasted chickpeas & apple', mins: 30,
+    items: [['chickpeas', 120, 'p'], ['oliveOil', 5, 'f'], ['apple', 120, 'c']],
+    extras: 'Smoked paprika, salt',
+    steps: ['Pat chickpeas dry, toss with oil, paprika and salt.', 'Roast at 200°C (or air-fry) for 25 minutes until crunchy.', 'Serve with a sliced apple.'],
+  },
+  {
+    id: 'iced-coffee-protein-shake', slot: 'snack', name: 'Iced coffee protein shake', mins: 3,
+    items: [['milk', 250, 'v'], ['whey', 30, 'p'], ['banana', 70, 'c'], ['almonds', 8, 'f']],
+    extras: '1 shot cold espresso or 1 tsp instant coffee, ice',
+    steps: ['Blend milk, protein powder, banana, coffee and ice until frothy.', 'Serve with almonds on the side.'],
+  },
+  {
+    id: 'pb-apple-rice-cakes', slot: 'snack', name: 'Peanut butter apple rice cakes & edamame', mins: 5,
+    items: [['riceCakes', 20, 'c'], ['peanutButter', 15, 'f'], ['apple', 80, 'c'], ['edamame', 80, 'p']],
+    extras: 'Cinnamon, sea salt',
+    steps: ['Spread rice cakes with peanut butter and top with thin apple slices and cinnamon.', 'Serve with salted, warmed edamame.'],
+  },
+  {
+    id: 'frozen-yogurt-bark', slot: 'snack', name: 'Blueberry & dark chocolate yoghurt bark', mins: 10,
+    items: [['greekYogurt', 200, 'p'], ['blueberries', 60, 'v'], ['honey', 10, 'c'], ['darkChoc', 10, 'f']],
+    extras: 'Vanilla',
+    steps: ['Mix yoghurt with honey and vanilla and spread thinly on a lined tray.', 'Scatter with blueberries and chopped chocolate.', 'Freeze for 2 hours, then break into pieces.'],
+  },
+  {
+    id: 'tuna-cucumber-boats', slot: 'snack', name: 'Tuna cucumber boats with rice cakes', mins: 5,
+    items: [['tuna', 95, 'p'], ['cucumber', 120, 'v'], ['greekYogurt', 30, 'v'], ['riceCakes', 20, 'c'], ['avocado', 25, 'f']],
+    extras: 'Lemon, dill, pepper',
+    steps: ['Halve a cucumber lengthways and scoop out the seeds.', 'Mix tuna with yoghurt, mashed avocado, lemon and dill.', 'Fill the cucumber and serve with rice cakes.'],
+  },
+  {
+    id: 'eggs-almonds-apple', slot: 'snack', name: 'Boiled eggs, almonds & apple', mins: 12,
+    items: [['egg', 100, 'p'], ['almonds', 10, 'f'], ['apple', 120, 'c']],
+    extras: 'Salt, pepper',
+    steps: ['Boil eggs for 9 minutes, cool and peel.', 'Season and serve with almonds and a sliced apple.'],
+  },
+  {
+    id: 'cottage-herb-dip', slot: 'snack', name: 'Herby cottage cheese dip with veggie sticks', mins: 5,
+    items: [['cottage', 150, 'p'], ['carrot', 80, 'v'], ['cucumber', 80, 'v'], ['riceCakes', 20, 'c'], ['hummus', 20, 'f']],
+    extras: 'Chives, dill, lemon zest',
+    steps: ['Stir chopped herbs and lemon zest through the cottage cheese, then swirl in the hummus.', 'Serve with carrot and cucumber sticks and rice cakes.'],
+  },
+  {
+    id: 'vegan-chia-protein-pudding', slot: 'snack', name: 'Strawberry chia protein pudding', mins: 5,
+    items: [['soyMilk', 200, 'v'], ['plantProtein', 25, 'p'], ['chia', 15, 'f'], ['banana', 50, 'c'], ['strawberries', 60, 'v']],
+    extras: 'Vanilla',
+    steps: ['Whisk soy milk, protein powder and vanilla, then stir in chia and mashed banana.', 'Chill at least 2 hours.', 'Top with sliced strawberries.'],
+  },
+  {
+    id: 'smoked-salmon-rice-cakes', slot: 'snack', name: 'Smoked salmon & avocado rice cakes', mins: 5,
+    items: [['riceCakes', 30, 'c'], ['smokedSalmon', 60, 'p'], ['avocado', 30, 'f'], ['cucumber', 40, 'v']],
+    extras: 'Lemon, cracked pepper, capers',
+    steps: ['Spread rice cakes with mashed avocado.', 'Top with smoked salmon, cucumber slices, lemon and pepper.'],
+  },
+  {
+    id: 'banana-protein-mug-cake', slot: 'snack', name: 'Banana oat protein mug cake', mins: 5,
+    items: [['oats', 35, 'c'], ['banana', 60, 'c'], ['eggWhite', 60, 'p'], ['whey', 10, 'p'], ['peanutButter', 8, 'f']],
+    extras: '½ tsp baking powder, cinnamon',
+    steps: ['Mash banana in a large mug, then mix in oats, egg white, protein powder, baking powder and cinnamon.', 'Microwave 90 seconds to 2 minutes until set.', 'Top with peanut butter.'],
+  },
+
+  // ---------- Dinner (set 3) ----------
+  {
+    id: 'tofu-teriyaki-bowl', slot: 'dinner', name: 'Sticky teriyaki tofu rice bowl', mins: 25,
+    items: [['tofu', 200, 'p'], ['brownRice', 160, 'c'], ['broccoli', 100, 'v'], ['carrot', 50, 'v'], ['soySauce', 15, 'v'], ['oliveOil', 6, 'f']],
+    extras: 'Ginger, garlic, 1 tsp maple syrup or sugar, 1 tsp cornflour',
+    steps: ['Cube tofu and pan-fry in the oil until golden.', 'Mix soy sauce, ginger, garlic, sweetener, cornflour and a splash of water; pour over tofu and toss until sticky.', 'Steam broccoli and carrot.', 'Serve over rice.'],
+  },
+  {
+    id: 'lentil-shepherds-pie', slot: 'dinner', name: 'Lentil shepherd’s pie', mins: 45,
+    items: [['lentils', 180, 'p'], ['potato', 250, 'c'], ['carrot', 60, 'v'], ['onion', 40, 'v'], ['passata', 100, 'v'], ['oliveOil', 8, 'f'], ['soyMilk', 50, 'v']],
+    extras: 'Garlic, thyme, stock cube',
+    steps: ['Boil potatoes until soft, then mash with soy milk and half the oil.', 'Soften onion, carrot and garlic in the rest of the oil; add lentils, passata, thyme and stock and simmer 10 minutes.', 'Spoon into a dish, top with mash and bake at 200°C for 20 minutes.'],
+  },
+  {
+    id: 'black-bean-burrito-bowl', slot: 'dinner', name: 'Black bean burrito bowl', mins: 20,
+    items: [['blackBeans', 150, 'p'], ['brownRice', 150, 'c'], ['corn', 60, 'v'], ['capsicum', 60, 'v'], ['avocado', 50, 'f'], ['cherryTomato', 50, 'v'], ['lemon', 10, 'v']],
+    extras: 'Cumin, smoked paprika, garlic, coriander',
+    steps: ['Warm beans with cumin, paprika, garlic and a splash of water.', 'Char capsicum and corn in a hot pan.', 'Build bowls with rice, beans, veg, tomatoes and avocado.', 'Finish with lime and coriander.'],
+  },
+  {
+    id: 'lentil-pasta-bake', slot: 'dinner', name: 'Lentil & zucchini pasta bake', mins: 40,
+    items: [['pasta', 80, 'c'], ['lentils', 120, 'p'], ['passata', 200, 'v'], ['zucchini', 100, 'v'], ['mozzarella', 30, 'f'], ['spinach', 40, 'v']],
+    extras: 'Garlic, oregano, basil',
+    steps: ['Cook pasta until just under done.', 'Simmer passata with garlic, herbs, diced zucchini and lentils for 10 minutes; stir in spinach.', 'Mix with pasta, top with mozzarella and bake at 200°C for 15 minutes.'],
+  },
+  {
+    id: 'lemon-herb-chicken-potatoes', slot: 'dinner', name: 'Lemon herb chicken with crispy potatoes', mins: 40,
+    items: [['chicken', 170, 'p'], ['potato', 250, 'c'], ['greenBeans', 100, 'v'], ['oliveOil', 10, 'f'], ['lemon', 10, 'v'], ['garlic', 5, 'v']],
+    extras: 'Rosemary, thyme, salt, pepper',
+    steps: ['Cube potatoes, toss with most of the oil and rosemary, and roast at 210°C for 30 minutes.', 'Rub chicken with garlic, lemon, thyme and the remaining oil; add to the tray for the last 20 minutes.', 'Steam green beans and serve together.'],
+  },
+  {
+    id: 'pork-sweet-potato-traybake', slot: 'dinner', name: 'Pork, sweet potato & broccoli traybake', mins: 40,
+    items: [['porkLoin', 160, 'p'], ['sweetPotato', 200, 'c'], ['broccoli', 100, 'v'], ['capsicum', 80, 'v'], ['oliveOil', 8, 'f']],
+    extras: 'Fennel seeds or paprika, garlic, salt',
+    steps: ['Cube sweet potato, toss with half the oil and roast at 200°C for 15 minutes.', 'Add sliced pork, broccoli and capsicum tossed in the rest of the oil and spices.', 'Roast 15–20 minutes more until the pork is cooked through.'],
+  },
+  {
+    id: 'prawn-mango-tacos', slot: 'dinner', name: 'Prawn tacos with mango salsa', mins: 20,
+    items: [['prawns', 160, 'p'], ['cornTortilla', 78, 'c'], ['saladLeaves', 40, 'v'], ['mango', 50, 'v'], ['avocado', 40, 'f'], ['greekYogurt', 30, 'v'], ['lemon', 10, 'v']],
+    extras: 'Chilli, garlic, coriander',
+    steps: ['Dice mango and mix with lime juice, chilli and coriander.', 'Pan-fry prawns with garlic and chilli for 2–3 minutes.', 'Warm tortillas and fill with leaves, prawns, salsa, avocado and yoghurt.'],
+  },
+  {
+    id: 'sweet-potato-cottage-pie', slot: 'dinner', name: 'Beef cottage pie with sweet potato mash', mins: 45,
+    items: [['beefMince', 150, 'p'], ['sweetPotato', 250, 'c'], ['carrot', 50, 'v'], ['onion', 40, 'v'], ['passata', 100, 'v'], ['cheddar', 15, 'f']],
+    extras: 'Garlic, Worcestershire sauce, thyme',
+    steps: ['Boil sweet potato until soft and mash.', 'Brown the mince with onion, carrot and garlic; add passata, thyme and a dash of Worcestershire and simmer 10 minutes.', 'Top with mash and cheese and bake at 200°C for 20 minutes.'],
+  },
+  {
+    id: 'salmon-quinoa-greens', slot: 'dinner', name: 'Pan-seared salmon with quinoa & greens', mins: 25,
+    items: [['salmon', 150, 'p'], ['quinoa', 140, 'c'], ['broccoli', 80, 'v'], ['spinach', 40, 'v'], ['lemon', 10, 'v'], ['oliveOil', 3, 'f']],
+    extras: 'Garlic, dill, salt, pepper',
+    steps: ['Sear salmon skin-side down in the oil for 4 minutes, flip and cook 2–3 more.', 'Steam broccoli and wilt spinach with garlic.', 'Serve on quinoa with lemon and dill.'],
+  },
+  {
+    id: 'turkey-stuffed-capsicums', slot: 'dinner', name: 'Turkey & rice stuffed capsicums', mins: 45,
+    items: [['turkeyMince', 150, 'p'], ['brownRice', 120, 'c'], ['capsicum', 200, 'v'], ['passata', 100, 'v'], ['onion', 40, 'v'], ['mozzarella', 25, 'f']],
+    extras: 'Garlic, oregano, paprika',
+    steps: ['Halve and deseed capsicums.', 'Brown turkey with onion, garlic and spices; stir in rice and passata.', 'Fill the capsicums, top with mozzarella, cover with foil and bake at 190°C for 30 minutes (uncover for the last 10).'],
+  },
 ];

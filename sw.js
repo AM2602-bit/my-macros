@@ -1,6 +1,6 @@
 // Offline support: serve the app shell from cache, refresh it in the background.
 // Bump VERSION whenever app files change so phones pick up the update.
-const VERSION = 'mm-v5';
+const VERSION = 'mm-v6';
 const SHELL = [
   './',
   'index.html',

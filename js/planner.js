@@ -36,7 +36,8 @@
   const HISTORY_MAX = 10;
   // How much worse than the best-fitting recipe a candidate may be (in error
   // units, roughly a few % off per macro) and still be picked.
-  const FIT_TOLERANCE = 0.01;
+  // 0.03 keeps daily totals within ~2% of target while letting most recipes rotate in.
+  const FIT_TOLERANCE = 0.03;
 
   // Accepts the current shape or the original flat one ({ vegetarian, dairyFree, ... }).
   function normalizePrefs(p) {
