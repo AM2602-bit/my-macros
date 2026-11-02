@@ -18,6 +18,17 @@ window.FOODS = {
   eggWhite:      { name: 'Egg whites',               kcal: 52,  p: 10.9, c: 0.7,  f: 0.2,  flags: ['egg'] },
 
   chicken:       { name: 'Chicken breast (raw)',     kcal: 120, p: 22.5, c: 0,    f: 2.6,  flags: ['meat'] },
+  // Branded convenience products (per 100 g from retailer nutrition panels / brand
+  // info, cross-checked Nov 2026). Recipes change, so pack labels win if they differ.
+  cookedChicken: { name: 'Coles Shredded Roast Chicken Breast', kcal: 123, p: 22.9, c: 1.4, f: 2.4, flags: ['meat'] },
+  batteredFish:  { name: 'Birds Eye Oven Bake Lightly Battered Hoki', kcal: 170, p: 12.1, c: 10.7, f: 7.7, flags: ['fish', 'gluten'], unit: { one: 'fillet', many: 'fillets', g: 71, step: 1 } },
+  frozenChips:   { name: 'McCain AirFryer Steak Cut Chips', kcal: 136, p: 2.3, c: 23.0, f: 3.3, flags: [] },
+  proteinPie:    { name: 'FroPro Protein Pie Classic Beef', kcal: 182, p: 13.8, c: 16.8, f: 6.8, flags: ['meat', 'gluten', 'dairy'], unit: { one: 'pie', many: 'pies', g: 220, step: 1 } },
+  proteinPizza:  { name: 'FroPro Protein Pizza Slice BBQ Chicken', kcal: 151, p: 15.8, c: 13.3, f: 3.8, flags: ['meat', 'gluten', 'dairy'], unit: { one: 'slice', many: 'slices', g: 180, step: 1 } },
+  mixedVeg:      { name: 'Heinz Steam Fresh Beans, Broccoli & Sugar Snap Peas', kcal: 35, p: 2.4, c: 3.7, f: 0.3, flags: [] },
+  coleslawMix:   { name: 'Coleslaw mix (supermarket kit)', kcal: 25, p: 1.2, c: 4.5, f: 0.2, flags: [] },
+  coleslawDressing: { name: 'Praise 99% Fat Free Coleslaw Dressing', kcal: 124, p: 1.0, c: 27.2, f: 1.0, flags: ['egg'], ml: true },
+  bbqSauce:      { name: 'MasterFoods Smokey Barbecue Sauce', kcal: 234, p: 0.5, c: 57.5, f: 0.1, flags: [] },
   turkeyMince:   { name: 'Lean turkey mince (raw)',  kcal: 148, p: 19.7, c: 0,    f: 7.7,  flags: ['meat'] },
   porkLoin:      { name: 'Pork fillet (raw)',        kcal: 120, p: 21.0, c: 0,    f: 3.5,  flags: ['meat'] },
   lambLean:      { name: 'Lean lamb leg steak (raw)', kcal: 134, p: 20.8, c: 0,   f: 5.2,  flags: ['meat'] },
@@ -96,12 +107,13 @@ window.FOODS = {
 
 // Grouping for the food preferences screen.
 window.FOOD_GROUPS = [
-  ['Meat & seafood',     ['chicken', 'beefMince', 'turkey', 'salmon', 'smokedSalmon', 'tuna', 'prawns', 'cod', 'turkeyMince', 'porkLoin', 'lambLean', 'beefSteak']],
+  ['Meat & seafood',     ['chicken', 'beefMince', 'turkey', 'salmon', 'smokedSalmon', 'tuna', 'prawns', 'cod', 'turkeyMince', 'porkLoin', 'lambLean', 'beefSteak', 'cookedChicken']],
   ['Dairy & eggs',       ['milk', 'greekYogurt', 'cottage', 'feta', 'cheddar', 'parmesan', 'egg', 'eggWhite', 'whey', 'mozzarella', 'halloumi']],
   ['Plant protein',      ['tofu', 'edamame', 'lentils', 'chickpeas', 'blackBeans', 'soyMilk', 'plantProtein']],
   ['Grains & starches',  ['oats', 'bread', 'wrap', 'pasta', 'brownRice', 'whiteRice', 'quinoa', 'sweetPotato', 'potato', 'riceCakes', 'granola', 'cornTortilla', 'riceNoodles', 'couscous', 'pitaBread']],
   ['Fruit',              ['banana', 'blueberries', 'strawberries', 'apple', 'mango', 'pineapple']],
-  ['Vegetables',         ['spinach', 'saladLeaves', 'cherryTomato', 'cucumber', 'capsicum', 'onion', 'garlic', 'mushrooms', 'zucchini', 'broccoli', 'greenBeans', 'stirFryVeg', 'passata', 'cauliflower', 'pumpkin', 'carrot', 'corn', 'eggplant', 'cabbage', 'peas']],
+  ['Vegetables',         ['spinach', 'saladLeaves', 'cherryTomato', 'cucumber', 'capsicum', 'onion', 'garlic', 'mushrooms', 'zucchini', 'broccoli', 'greenBeans', 'stirFryVeg', 'passata', 'cauliflower', 'pumpkin', 'carrot', 'corn', 'eggplant', 'cabbage', 'peas', 'coleslawMix']],
   ['Nuts, seeds & fats', ['avocado', 'oliveOil', 'peanutButter', 'almonds', 'chia', 'hummus', 'coconutMilk']],
-  ['Extras',             ['honey', 'darkChoc', 'lemon', 'soySauce', 'cocoa']],
+  ['Frozen & ready-made', ['batteredFish', 'frozenChips', 'proteinPie', 'proteinPizza', 'mixedVeg']],
+  ['Extras',             ['honey', 'darkChoc', 'lemon', 'soySauce', 'cocoa', 'coleslawDressing', 'bbqSauce']],
 ];

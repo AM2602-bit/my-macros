@@ -90,4 +90,13 @@ window.PACKS = {
   eggplant:      { size: 400,  label: '1 eggplant',                    search: 'eggplant' },
   cabbage:       { size: 1000, label: '½ cabbage (≈1 kg)',             search: 'cabbage' },
   peas:          { size: 500,  label: '500 g bag (frozen)',            search: 'frozen peas' },
+  cookedChicken: { size: 250,  label: '250 g pack',                    search: 'coles shredded roast chicken breast' },
+  batteredFish:  { size: 425,  label: '425 g box (6 fillets)',         search: 'birds eye oven bake lightly battered' },
+  frozenChips:   { size: 750,  label: '750 g bag',                     search: 'mccain airfryer steak cut chips' },
+  proteinPie:    { size: 440,  label: '2 pack',                        search: 'fropro protein pie classic beef' },
+  proteinPizza:  { size: 360,  label: '2 slices',                      search: 'fropro protein pizza slices bbq chicken' },
+  mixedVeg:      { size: 450,  label: '450 g steam bag',               search: 'heinz steam fresh beans broccoli sugar snap peas' },
+  coleslawMix:   { size: 400,  label: '400 g bag',                     search: 'coleslaw mix' },
+  coleslawDressing: { size: 330, label: '330 ml bottle',               search: 'praise coleslaw dressing 99% fat free' },
+  bbqSauce:      { size: 500,  label: '500 ml bottle',                 search: 'masterfoods smokey barbecue sauce' },
 };

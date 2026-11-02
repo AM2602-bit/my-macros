@@ -930,4 +930,24 @@ window.RECIPES = [
     extras: '1–2 tbsp red curry paste (check it is vegan), lime, Thai basil',
     steps: ['Fry the curry paste for 1 minute, then add coconut milk and a little water.', 'Add cubed tofu, capsicum and zucchini; simmer 8 minutes.', 'Stir through spinach and lime juice.', 'Serve with jasmine rice and basil.'],
   },
+
+  // ---------- Quick air fryer meals (branded convenience products) ----------
+  {
+    id: 'air-fryer-fish-chips-slaw', slot: 'dinner', cuisine: 'British', name: 'Air fryer fish & chips with slaw', mins: 20,
+    items: [['batteredFish', 142, 'p'], ['frozenChips', 100, 'c'], ['coleslawMix', 100, 'v'], ['coleslawDressing', 20, 'v']],
+    extras: 'Lemon wedge, salt',
+    steps: ['Air-fry the chips at 200°C for 8 minutes, then shake.', 'Add the fish fillets and cook 10–12 minutes more, until the fish is crisp and hot through.', 'Toss the coleslaw mix with the dressing.', 'Serve with lemon.'],
+  },
+  {
+    id: 'protein-pie-chips-veg', slot: 'dinner', cuisine: 'Australian', name: 'Protein pie with chips & veg', mins: 25,
+    items: [['proteinPie', 220, 'p'], ['frozenChips', 100, 'c'], ['mixedVeg', 150, 'v']],
+    extras: 'Tomato sauce (optional)',
+    steps: ['Air-fry the pie at 180°C for 18–20 minutes (follow the pack), adding the chips for the last 12 minutes.', 'Microwave the veg steam bag per the pack.', 'Serve together.'],
+  },
+  {
+    id: 'protein-bbq-chicken-pizza', slot: 'lunch', cuisine: 'American', name: 'Loaded BBQ chicken protein pizza', mins: 12,
+    items: [['proteinPizza', 180, 'v'], ['cookedChicken', 80, 'p'], ['mozzarella', 20, 'v'], ['bbqSauce', 15, 'v']],
+    extras: 'Chilli flakes, fresh herbs',
+    steps: ['Top the pizza slice with shredded chicken and mozzarella.', 'Air-fry at 180°C for 8–10 minutes until the cheese is bubbling.', 'Drizzle with BBQ sauce to serve.'],
+  },
 ];
