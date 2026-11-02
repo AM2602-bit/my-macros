@@ -85,6 +85,25 @@
     return m;
   }
 
+  // Imported recipes keep the macros their source published: each macro is
+  // scaled by (published / calculated at the base portion), so the base portion
+  // matches the source exactly and other portions scale from it.
+  const MACRO_ADJUST = {};
+  RECIPES.forEach((r) => {
+    if (!r.bookMacros) return;
+    const base = macrosOf(r.items.map(([food, g]) => ({ food, g })));
+    MACRO_ADJUST[r.id] = {};
+    KEYS.forEach((k) => { MACRO_ADJUST[r.id][k] = base[k] > 0 ? r.bookMacros[k] / base[k] : 1; });
+  });
+
+  function adjustMacros(recipe, m) {
+    const a = MACRO_ADJUST[recipe.id];
+    if (!a) return m;
+    const out = {};
+    KEYS.forEach((k) => { out[k] = m[k] * a[k]; });
+    return out;
+  }
+
   // Sum of macros contributed by each role at base amounts.
   function roleTotals(recipe) {
     const totals = {};
@@ -93,6 +112,7 @@
       const n = FOODS[food];
       KEYS.forEach((k) => { totals[role][k] += (n[k] * g) / 100; });
     });
+    Object.keys(totals).forEach((role) => { totals[role] = adjustMacros(recipe, totals[role]); });
     return totals;
   }
 
@@ -147,7 +167,7 @@
       food,
       g: roundAmount(food, role === 'v' ? g : g * s[role]),
     }));
-    const macros = macrosOf(items);
+    const macros = adjustMacros(recipe, macrosOf(items));
     return { id: recipe.id, items, macros, error: errorOf(macros, target) };
   }
 

@@ -4,6 +4,8 @@
 //   v = vegetables/flavour — kept at the base amount.
 // Steps avoid quantities so they read correctly at any portion size.
 // cuisine: shown on meal cards (e.g. 'Thai · 25 min').
+// source: 'app' (default, written for the app) or 'imported', with sourceName saying where from.
+// bookMacros: per-serve macros as published by the source; the planner uses these instead of its own figures.
 window.RECIPES = [
   // ---------- Breakfast ----------
   {
@@ -933,19 +935,19 @@ window.RECIPES = [
 
   // ---------- Quick air fryer meals (branded convenience products) ----------
   {
-    id: 'air-fryer-fish-chips-slaw', slot: 'dinner', cuisine: 'British', name: 'Air fryer fish & chips with slaw', mins: 20,
+    id: 'air-fryer-fish-chips-slaw', slot: 'dinner', cuisine: 'British', source: 'imported', sourceName: 'Air fryer meals PDF', bookMacros: { kcal: 513, p: 21, c: 47, f: 14 }, name: 'Air fryer fish & chips with slaw', mins: 20,
     items: [['batteredFish', 142, 'p'], ['frozenChips', 100, 'c'], ['coleslawMix', 100, 'v'], ['coleslawDressing', 20, 'v']],
     extras: 'Lemon wedge, salt',
     steps: ['Air-fry the chips at 200°C for 8 minutes, then shake.', 'Add the fish fillets and cook 10–12 minutes more, until the fish is crisp and hot through.', 'Toss the coleslaw mix with the dressing.', 'Serve with lemon.'],
   },
   {
-    id: 'protein-pie-chips-veg', slot: 'dinner', cuisine: 'Australian', name: 'Protein pie with chips & veg', mins: 25,
+    id: 'protein-pie-chips-veg', slot: 'dinner', cuisine: 'Australian', source: 'imported', sourceName: 'Air fryer meals PDF', bookMacros: { kcal: 582, p: 37.2, c: 67.9, f: 18.6 }, name: 'Protein pie with chips & veg', mins: 25,
     items: [['proteinPie', 220, 'p'], ['frozenChips', 100, 'c'], ['mixedVeg', 150, 'v']],
     extras: 'Tomato sauce (optional)',
     steps: ['Air-fry the pie at 180°C for 18–20 minutes (follow the pack), adding the chips for the last 12 minutes.', 'Microwave the veg steam bag per the pack.', 'Serve together.'],
   },
   {
-    id: 'protein-bbq-chicken-pizza', slot: 'lunch', cuisine: 'American', name: 'Loaded BBQ chicken protein pizza', mins: 12,
+    id: 'protein-bbq-chicken-pizza', slot: 'lunch', cuisine: 'American', source: 'imported', sourceName: 'Air fryer meals PDF', bookMacros: { kcal: 456, p: 53.3, c: 33.9, f: 11.7 }, name: 'Loaded BBQ chicken protein pizza', mins: 12,
     items: [['proteinPizza', 180, 'v'], ['cookedChicken', 80, 'p'], ['mozzarella', 20, 'v'], ['bbqSauce', 15, 'v']],
     extras: 'Chilli flakes, fresh herbs',
     steps: ['Top the pizza slice with shredded chicken and mozzarella.', 'Air-fry at 180°C for 8–10 minutes until the cheese is bubbling.', 'Drizzle with BBQ sauce to serve.'],
@@ -953,145 +955,145 @@ window.RECIPES = [
 
   // ---------- September recipe book (per-serve quantities) ----------
   {
-    id: 'nutella-baked-weetbix', slot: 'breakfast', cuisine: 'Everyday', name: 'Nutella baked Weet-Bix', mins: 25,
+    id: 'nutella-baked-weetbix', slot: 'breakfast', cuisine: 'Everyday', source: 'imported', sourceName: 'September Recipe Book', bookMacros: { kcal: 468, p: 51, c: 39, f: 12 }, name: 'Nutella baked Weet-Bix', mins: 25,
     items: [['weetbixGF', 30, 'c'], ['whey', 30, 'p'], ['egg', 50, 'v'], ['almondMilk', 50, 'v'], ['strawberries', 75, 'v'], ['sfMapleSyrup', 10, 'v'], ['nutella', 15, 'f'], ['yoproVanilla', 100, 'p']],
     extras: '½ tsp baking powder',
     steps: ['Crush the Weet-Bix in an oven-safe dish and mix in the protein powder and baking powder.', 'Stir in the egg, almond milk and syrup.', 'Fold through two-thirds of the strawberries, chopped; slice the rest over the top and spoon the Nutella into the middle.', 'Bake or air-fry at 160°C for about 20 minutes until set. Cool slightly and top with the yoghurt.'],
   },
   {
-    id: 'chicken-bacon-feta-bruschetta', slot: 'breakfast', cuisine: 'Italian', name: 'Chicken, bacon & feta breakfast bruschetta', mins: 20,
+    id: 'chicken-bacon-feta-bruschetta', slot: 'breakfast', cuisine: 'Italian', source: 'imported', sourceName: 'September Recipe Book', bookMacros: { kcal: 543, p: 41, c: 61, f: 15 }, name: 'Chicken, bacon & feta breakfast bruschetta', mins: 20,
     items: [['chicken', 80, 'p'], ['shortcutBacon', 50, 'p'], ['sourdough', 100, 'c'], ['tomato', 80, 'v'], ['onion', 20, 'v'], ['feta', 20, 'f'], ['balsamicGlaze', 10, 'v'], ['oliveOil', 1, 'v']],
     extras: 'Garlic powder, dried Italian herbs, salt, pepper',
     steps: ['Season diced chicken with garlic powder, herbs, salt and pepper; pan-fry in the oil for 6–8 minutes.', 'Add the chopped bacon and cook 2–3 minutes until crisp.', 'Toast the sourdough.', 'Pile on the chicken and bacon, diced tomato, red onion and feta; drizzle with balsamic glaze.'],
   },
   {
-    id: 'deluxe-bacon-egg-muffin', slot: 'breakfast', cuisine: 'American', name: 'Deluxe bacon & egg muffin', mins: 15,
+    id: 'deluxe-bacon-egg-muffin', slot: 'breakfast', cuisine: 'American', source: 'imported', sourceName: 'September Recipe Book', bookMacros: { kcal: 418, p: 27, c: 28, f: 22 }, name: 'Deluxe bacon & egg muffin', mins: 15,
     items: [['englishMuffin', 67, 'c'], ['egg', 50, 'p'], ['shortcutBacon', 50, 'p'], ['cheeseSlice', 20, 'f'], ['tomato', 40, 'v'], ['iceberg', 15, 'v'], ['lightMayo', 10, 'f'], ['oliveOil', 1, 'v']],
     extras: 'Salt, pepper',
     steps: ['Toast the split muffin.', 'Pan-fry the bacon 2–3 minutes per side, then cook the egg in an egg ring until set and melt the cheese on top.', 'Spread the muffin with mayo and layer lettuce, tomato, bacon and the cheesy egg.'],
   },
   {
-    id: 'grilled-tomato-sourdough', slot: 'breakfast', cuisine: 'Italian', name: 'Grilled tomato & cottage cheese sourdough', mins: 13,
+    id: 'grilled-tomato-sourdough', slot: 'breakfast', cuisine: 'Italian', source: 'imported', sourceName: 'September Recipe Book', bookMacros: { kcal: 395, p: 28, c: 55, f: 7 }, name: 'Grilled tomato & cottage cheese sourdough', mins: 13,
     items: [['sourdough', 100, 'c'], ['hpCottage', 100, 'p'], ['mozzarellaFull', 20, 'f'], ['tomato', 100, 'v']],
     extras: 'Salt, pepper, dried Italian herbs',
     steps: ['Toast one side of the sourdough under a hot grill.', 'Flip, spread the untoasted side with cottage cheese and cover with sliced tomato; season with salt, pepper and herbs.', 'Scatter with mozzarella and grill 3–5 minutes until melted and golden.'],
   },
   {
-    id: 'sweet-chilli-chicken-noodle-salad', slot: 'lunch', cuisine: 'Thai', name: 'Sweet chilli chicken cold noodle salad', mins: 30,
+    id: 'sweet-chilli-chicken-noodle-salad', slot: 'lunch', cuisine: 'Thai', source: 'imported', sourceName: 'September Recipe Book', bookMacros: { kcal: 495, p: 72, c: 36, f: 7 }, name: 'Sweet chilli chicken cold noodle salad', mins: 30,
     items: [['chicken', 200, 'p'], ['riceVermicelli', 40, 'c'], ['carrot', 40, 'v'], ['cabbage', 50, 'v'], ['cucumber', 50, 'v'], ['springOnion', 15, 'v'], ['pickledOnion', 30, 'v'], ['sweetChilli', 30, 'v'], ['soySauce', 10, 'v']],
     extras: 'Salt (for poaching); use gluten-free soy if needed',
     steps: ['Poach the chicken in gently simmering salted water for 12–15 minutes until cooked through (75°C); rest and shred.', 'Soak the vermicelli in boiling water, drain, rinse cold and snip shorter.', 'Toss the noodles with julienned carrot, shredded red cabbage, cucumber, spring onion and pickled onion.', 'Add the chicken, sweet chilli and soy sauce, toss and chill. Keeps 3 days.'],
   },
   {
-    id: 'spicy-prawn-linguine', slot: 'dinner', cuisine: 'Italian', name: 'Spicy prawn linguine', mins: 25,
+    id: 'spicy-prawn-linguine', slot: 'dinner', cuisine: 'Italian', source: 'imported', sourceName: 'September Recipe Book', bookMacros: { kcal: 331, p: 28, c: 30, f: 11 }, name: 'Spicy prawn linguine', mins: 25,
     items: [['linguine', 75, 'c'], ['prawns', 150, 'p'], ['cherryTomato', 50, 'v'], ['passata', 100, 'v'], ['lightCream', 50, 'f'], ['garlic', 3, 'v'], ['lemon', 6, 'v'], ['oliveOil', 1, 'v']],
     extras: 'Fresh red chilli, flat-leaf parsley, salt, pepper',
     steps: ['Cook the linguine until al dente, keeping a splash of pasta water.', 'Sear the seasoned prawns in a lightly oiled pan, 1–2 minutes per side; set aside.', 'Fry garlic and chilli for 30 seconds, add halved cherry tomatoes, then the passata and cream; simmer 3–4 minutes.', 'Toss in the pasta, lemon juice, pasta water and prawns; finish with parsley.'],
   },
   {
-    id: 'chicken-chorizo-gnocchi', slot: 'dinner', cuisine: 'Italian', name: 'Chicken & chorizo pumpkin gnocchi', mins: 30,
+    id: 'chicken-chorizo-gnocchi', slot: 'dinner', cuisine: 'Italian', source: 'imported', sourceName: 'September Recipe Book', bookMacros: { kcal: 577, p: 56, c: 50, f: 17 }, name: 'Chicken & chorizo pumpkin gnocchi', mins: 30,
     items: [['gnocchi', 100, 'c'], ['chicken', 150, 'p'], ['pepperoni', 25, 'f'], ['passata', 100, 'v'], ['lightCream', 20, 'f'], ['onion', 30, 'v'], ['garlic', 3, 'v']],
     extras: 'Tuscan chicken seasoning, salt, pepper',
     steps: ['Boil the gnocchi per the packet and drain.', 'Soften onion and garlic, then brown diced chicken and sliced chorizo for 7–9 minutes.', 'Add the passata and seasoning and simmer 3–4 minutes.', 'Stir in the gnocchi and cream until creamy and hot.'],
   },
   {
-    id: 'turkey-pizza-pocket', slot: 'dinner', cuisine: 'Italian', name: 'Crispy turkey pizza pocket', mins: 30,
+    id: 'turkey-pizza-pocket', slot: 'dinner', cuisine: 'Italian', source: 'imported', sourceName: 'September Recipe Book', bookMacros: { kcal: 529, p: 72, c: 31, f: 13 }, name: 'Crispy turkey pizza pocket', mins: 30,
     items: [['turkeyBreastMince', 250, 'p'], ['pizzaSauce', 40, 'v'], ['mozzarellaFull', 30, 'f'], ['pepperoni', 15, 'v'], ['gfBreadcrumbs', 20, 'c'], ['honey', 5, 'v']],
     extras: 'Onion powder, garlic powder, chilli flakes, salt, pepper (chilli honey if you have it)',
     steps: ['Season the turkey mince and press it into a thin rectangle between two sheets of baking paper.', 'Spread sauce over one half, add chopped pepperoni and mozzarella, then fold over and seal the edges.', 'Coat both sides in breadcrumbs and air-fry at 200°C for 15–20 minutes, turning halfway.', 'Rest 2 minutes and drizzle with honey.'],
   },
   {
-    id: 'chicken-bacon-risotto', slot: 'dinner', cuisine: 'Italian', name: 'Chicken, bacon & mushroom risotto', mins: 60,
+    id: 'chicken-bacon-risotto', slot: 'dinner', cuisine: 'Italian', source: 'imported', sourceName: 'September Recipe Book', bookMacros: { kcal: 632.7, p: 65.1, c: 55.5, f: 16.7 }, name: 'Chicken, bacon & mushroom risotto', mins: 60,
     items: [['chicken', 150, 'p'], ['shortcutBacon', 30, 'p'], ['mushrooms', 60, 'v'], ['arborio', 60, 'c'], ['onion', 30, 'v'], ['garlic', 3, 'v'], ['boneBroth', 200, 'v'], ['butter', 6, 'f'], ['parmesan', 10, 'f']],
     extras: 'Splash of water, salt, pepper',
     steps: ['Brown diced chicken and bacon, then the sliced mushrooms; set aside.', 'Melt half the butter, soften onion and garlic, then toast the rice for 1 minute.', 'Add a splash of water, then the broth in stages, stirring, until creamy and just tender (about 20 minutes).', 'Stir the chicken mix back in, take off the heat and beat in the rest of the butter and the parmesan.'],
   },
   {
-    id: 'chicken-fajita-bowls', slot: 'lunch', cuisine: 'Mexican', name: 'Chicken mince fajita meal-prep bowl', mins: 30,
+    id: 'chicken-fajita-bowls', slot: 'lunch', cuisine: 'Mexican', source: 'imported', sourceName: 'September Recipe Book', bookMacros: { kcal: 506, p: 46, c: 67, f: 6 }, name: 'Chicken mince fajita meal-prep bowl', mins: 30,
     items: [['chickenMince', 150, 'p'], ['capsicum', 60, 'v'], ['onion', 30, 'v'], ['corn', 40, 'v'], ['blackBeans', 50, 'v'], ['microwaveRice', 125, 'c'], ['iceberg', 30, 'v'], ['salsa', 40, 'v'], ['greekYogurt', 40, 'v'], ['oliveOil', 1, 'f']],
     extras: 'Fajita spice mix, splash of water',
     steps: ['Soften diced onion and capsicum in a lightly oiled pan, then brown the mince for 6–8 minutes.', 'Add fajita spice and a splash of water, then the corn and beans; cook until most of the liquid has gone.', 'Serve over the heated rice with lettuce, salsa and yoghurt (add cold toppings after reheating if meal-prepping).'],
   },
   {
-    id: 'gochujang-chicken-udon', slot: 'dinner', cuisine: 'Korean', name: 'Creamy gochujang chicken udon broth', mins: 30,
+    id: 'gochujang-chicken-udon', slot: 'dinner', cuisine: 'Korean', source: 'imported', sourceName: 'September Recipe Book', bookMacros: { kcal: 786, p: 41, c: 88, f: 30 }, name: 'Creamy gochujang chicken udon broth', mins: 30,
     items: [['chickenMince', 150, 'p'], ['udon', 88, 'c'], ['bokChoy', 100, 'v'], ['onion', 30, 'v'], ['garlic', 3, 'v'], ['ginger', 4, 'v'], ['gochujang', 12, 'v'], ['chickenStock', 200, 'v'], ['coconutMilk', 80, 'f'], ['soySauce', 10, 'v'], ['lemon', 3, 'v'], ['springOnion', 10, 'v']],
     extras: 'Olive oil spray, black pepper',
     steps: ['Soften the onion in a lightly oiled saucepan, then brown the mince.', 'Add garlic, ginger and gochujang for 1 minute, then the stock, coconut milk and soy; simmer 5 minutes.', 'Add the udon and bok choy for 3–4 minutes, then finish with lime juice and spring onion.'],
   },
   {
-    id: 'napoletana-chicken-burger', slot: 'dinner', cuisine: 'American', name: 'Napoletana grilled chicken & bacon burger', mins: 25,
+    id: 'napoletana-chicken-burger', slot: 'dinner', cuisine: 'American', source: 'imported', sourceName: 'September Recipe Book', bookMacros: { kcal: 572, p: 61, c: 37, f: 20 }, name: 'Napoletana grilled chicken & bacon burger', mins: 25,
     items: [['chicken', 150, 'p'], ['shortcutBacon', 25, 'p'], ['napoletana', 30, 'v'], ['cheeseSlice', 20, 'f'], ['hamburgerBun', 70, 'c'], ['lightMayo', 10, 'f'], ['oliveOil', 1, 'v']],
     extras: 'Garlic powder, onion powder, smoked paprika, salt, pepper',
     steps: ['Flatten the chicken fillet, season with the spices and pan-fry 4–5 minutes per side until cooked (75°C).', 'Cook the bacon in the same pan.', 'Top the chicken with Napoletana sauce and cheese, cover and melt for 1–2 minutes.', 'Toast the bun, spread with mayo and build with the chicken and bacon.'],
   },
   {
-    id: 'grilled-chicken-hokkien-salad', slot: 'lunch', cuisine: 'Asian', name: 'Grilled chicken hokkien noodle salad', mins: 30,
+    id: 'grilled-chicken-hokkien-salad', slot: 'lunch', cuisine: 'Asian', source: 'imported', sourceName: 'September Recipe Book', bookMacros: { kcal: 465, p: 57, c: 39, f: 9 }, name: 'Grilled chicken hokkien noodle salad', mins: 30,
     items: [['chicken', 150, 'p'], ['hokkien', 88, 'c'], ['broccoli', 50, 'v'], ['cauliflower', 50, 'v'], ['carrot', 40, 'v'], ['capsicum', 40, 'v'], ['springOnion', 15, 'v'], ['soySauce', 16, 'v'], ['sweetChilli', 12, 'v'], ['sesameOil', 2, 'f'], ['garlic', 3, 'v'], ['ginger', 2, 'v']],
     extras: 'Garlic powder, 1 tsp rice wine vinegar, salt, pepper',
     steps: ['Season chicken strips and grill or pan-fry 6–8 minutes.', 'Prepare the noodles and rinse cold; steam broccoli, cauliflower and carrot for 3–4 minutes and cool.', 'Whisk soy, sweet chilli, vinegar, sesame oil, garlic and ginger.', 'Toss the noodles, veg and dressing, then add the chicken. Serve cold.'],
   },
   {
-    id: 'croissant-smash-burger', slot: 'dinner', cuisine: 'American', name: 'Croissant smash burger', mins: 25,
+    id: 'croissant-smash-burger', slot: 'dinner', cuisine: 'American', source: 'imported', sourceName: 'September Recipe Book', bookMacros: { kcal: 487, p: 37, c: 33, f: 23 }, name: 'Croissant smash burger', mins: 25,
     items: [['beefMince', 125, 'p'], ['croissant', 54, 'c'], ['cheeseSlice', 20, 'f'], ['onion', 30, 'v'], ['tomato', 30, 'v'], ['iceberg', 20, 'v'], ['burgerSauce', 15, 'f'], ['oliveOil', 1, 'v']],
     extras: 'Garlic powder, onion powder, smoked paprika, salt, pepper',
     steps: ['Season the mince and roll into a ball.', 'Cook sliced onion in a lightly oiled pan until golden; set aside.', 'Smash the beef thin in a hot pan under baking paper, cook 2–3 minutes, flip, add the cheese and cover until melted.', 'Toast the split croissant and build with sauce, lettuce, tomato, patty and onion.'],
   },
   {
-    id: 'sundried-pesto-chicken-pasta', slot: 'dinner', cuisine: 'Italian', name: 'Creamy sundried tomato pesto chicken pasta', mins: 17,
+    id: 'sundried-pesto-chicken-pasta', slot: 'dinner', cuisine: 'Italian', source: 'imported', sourceName: 'September Recipe Book', bookMacros: { kcal: 455, p: 47, c: 42, f: 11 }, name: 'Creamy sundried tomato pesto chicken pasta', mins: 17,
     items: [['proteinPasta', 60, 'c'], ['roastChicken', 100, 'p'], ['tomatoPesto', 20, 'f'], ['cottageOriginal', 60, 'v'], ['spinach', 30, 'v']],
     extras: 'Reserved pasta water, salt, pepper',
     steps: ['Cook the pasta, reserving some cooking water.', 'Over low heat, stir pesto, cottage cheese and a splash of pasta water through the pasta until a creamy sauce forms.', 'Add sliced roast chicken and spinach and stir until hot and wilted.'],
   },
   {
-    id: 'satay-chicken-rice-bowl', slot: 'dinner', cuisine: 'Asian', name: 'Satay chicken, rice & veg bowl', mins: 20,
+    id: 'satay-chicken-rice-bowl', slot: 'dinner', cuisine: 'Asian', source: 'imported', sourceName: 'September Recipe Book', bookMacros: { kcal: 525, p: 32, c: 70, f: 13 }, name: 'Satay chicken, rice & veg bowl', mins: 20,
     items: [['satayKebabs', 150, 'p'], ['microwaveRice', 125, 'c'], ['mixedVeg', 150, 'v'], ['sataySauce', 40, 'f'], ['oliveOil', 1, 'v']],
     extras: '',
     steps: ['Pan-fry the chicken for 8–10 minutes until cooked through.', 'Heat the rice cup and the veg steam bag in the microwave.', 'Toss the chicken with the satay sauce over low heat.', 'Serve over the rice with the veg.'],
   },
   {
-    id: 'tuscan-chicken-smash-tacos', slot: 'lunch', cuisine: 'Mexican', name: 'Tuscan chicken smash tacos', mins: 30,
+    id: 'tuscan-chicken-smash-tacos', slot: 'lunch', cuisine: 'Mexican', source: 'imported', sourceName: 'September Recipe Book', bookMacros: { kcal: 638, p: 33, c: 68, f: 26 }, name: 'Tuscan chicken smash tacos', mins: 30,
     items: [['miniTacos', 50, 'c'], ['chickenMince', 80, 'p'], ['brie', 20, 'f'], ['sundriedTomato', 10, 'v'], ['iceberg', 20, 'v'], ['lightMayo', 12, 'f'], ['oliveOil', 1, 'v']],
     extras: 'Tuscan chicken seasoning',
     steps: ['Mix most of the seasoning through the mince and press it thinly over each taco.', 'Cook mince-side down in a lightly oiled pan for 3–4 minutes until crisp, then flip for 1–2 minutes.', 'Stir the rest of the seasoning into the mayo.', 'Top with brie, chopped sundried tomato, lettuce and the Tuscan mayo.'],
   },
   {
-    id: 'bbq-chicken-pizza-wrap', slot: 'lunch', cuisine: 'American', name: 'BBQ chicken pizza wrap', mins: 13,
+    id: 'bbq-chicken-pizza-wrap', slot: 'lunch', cuisine: 'American', source: 'imported', sourceName: 'September Recipe Book', bookMacros: { kcal: 384, p: 31, c: 20, f: 20 }, name: 'BBQ chicken pizza wrap', mins: 13,
     items: [['hpWrap', 70, 'c'], ['cookedChicken', 50, 'p'], ['sfBbqSauce', 15, 'v'], ['mozzarella', 25, 'f'], ['onion', 15, 'v']],
     extras: '',
     steps: ['Spread the BBQ sauce over the wrap.', 'Top with the chicken, mozzarella and sliced red onion.', 'Air-fry at 180°C for 6–8 minutes until bubbling and crisp; slice into wedges.'],
   },
   {
-    id: 'strawberry-white-choc-pies', slot: 'snack', cuisine: 'Everyday', name: 'Strawberry, banana & white choc rice paper pies', mins: 25,
+    id: 'strawberry-white-choc-pies', slot: 'snack', cuisine: 'Everyday', source: 'imported', sourceName: 'September Recipe Book', bookMacros: { kcal: 256, p: 4, c: 42, f: 8 }, name: 'Strawberry, banana & white choc rice paper pies', mins: 25,
     items: [['ricePaper', 15, 'c'], ['eggWash', 17, 'v'], ['strawberries', 50, 'v'], ['banana', 50, 'c'], ['whiteChoc', 20, 'f']],
     extras: 'Monk fruit icing sweetener, olive oil spray',
     steps: ['Soften two rice paper sheets in warm water, layer them and brush both sides with beaten egg.', 'Add strawberries, banana and white choc to one half, fold into a half-moon and press to seal.', 'Spray and air-fry at 180°C for 6–8 minutes, flipping halfway; dust with icing sweetener.'],
   },
   {
-    id: 'apple-pie-rice-paper-rolls', slot: 'snack', cuisine: 'Everyday', name: 'Apple pie rice paper rolls', mins: 23,
+    id: 'apple-pie-rice-paper-rolls', slot: 'snack', cuisine: 'Everyday', source: 'imported', sourceName: 'September Recipe Book', bookMacros: { kcal: 106, p: 2, c: 20, f: 2 }, name: 'Apple pie rice paper rolls', mins: 23,
     items: [['ricePaper', 15, 'c'], ['eggWash', 17, 'v'], ['applePieFruit', 75, 'c'], ['sfMapleSyrup', 15, 'v']],
     extras: 'Monk fruit icing sweetener, olive oil spray',
     steps: ['Stir the syrup through the apple.', 'Soften and double up two rice paper sheets; brush with beaten egg.', 'Spoon the apple along one edge, fold in the sides and roll up tightly.', 'Spray and air-fry at 180°C for 6–8 minutes, turning halfway; dust with icing sweetener.'],
   },
   {
-    id: 'choc-coconut-frappe', slot: 'snack', cuisine: 'Everyday', name: 'Chocolate coconut frappé', mins: 5,
+    id: 'choc-coconut-frappe', slot: 'snack', cuisine: 'Everyday', source: 'imported', sourceName: 'September Recipe Book', bookMacros: { kcal: 203, p: 10, c: 25, f: 7 }, name: 'Chocolate coconut frappé', mins: 5,
     items: [['chocCoconutWater', 250, 'c'], ['hotChocPowder', 12, 'v'], ['lightWhippedCream', 20, 'f'], ['chocSyrup', 10, 'v']],
     extras: '1½ cups ice, sugar-free coconut syrup (optional)',
     steps: ['Blend the ice, chocolate coconut water, hot chocolate powder and syrup until thick and frothy.', 'Pour into a tall glass, top with whipped cream and drizzle with chocolate syrup.'],
   },
   {
-    id: 'spicy-tuna-cottage-dip', slot: 'snack', cuisine: 'Everyday', name: 'Spicy tuna, pickle & cottage cheese dip', mins: 10,
+    id: 'spicy-tuna-cottage-dip', slot: 'snack', cuisine: 'Everyday', source: 'imported', sourceName: 'September Recipe Book', bookMacros: { kcal: 235, p: 18, c: 25, f: 7 }, name: 'Spicy tuna, pickle & cottage cheese dip', mins: 10,
     items: [['tuna', 15, 'p'], ['cottageOriginal', 50, 'p'], ['dillPickles', 8, 'v'], ['onion', 5, 'v'], ['sriracha', 8, 'v'], ['honey', 5, 'v'], ['cornChips', 25, 'c']],
     extras: '',
     steps: ['Flake the drained tuna into a bowl with the cottage cheese, chopped pickles and red onion.', 'Stir through sriracha and honey to taste.', 'Serve with the corn chips.'],
   },
   {
-    id: 'veggie-popcorn-snack-board', slot: 'snack', cuisine: 'Everyday', name: 'Cucumber, carrot & popcorn snack board with dill dip', mins: 10,
+    id: 'veggie-popcorn-snack-board', slot: 'snack', cuisine: 'Everyday', source: 'imported', sourceName: 'September Recipe Book', bookMacros: { kcal: 445, p: 19, c: 72, f: 9 }, name: 'Cucumber, carrot & popcorn snack board with dill dip', mins: 10,
     items: [['cucumber', 75, 'v'], ['carrot', 60, 'v'], ['popcorn', 20, 'c'], ['babybel', 20, 'f'], ['greekYogurt', 40, 'p'], ['dillPickles', 8, 'v'], ['lemon', 3, 'v']],
     extras: 'Splash of caper brine, onion powder, salt',
     steps: ['Cut the cucumber and carrot into sticks.', 'Mix the yoghurt with chopped pickles, lemon juice, caper brine, onion powder and salt.', 'Serve the veg, popcorn and Babybel with the dip.'],
   },
   {
-    id: 'layered-pizza-dip', slot: 'snack', cuisine: 'Italian', name: 'Layered pizza dip with wrap chips', mins: 25,
+    id: 'layered-pizza-dip', slot: 'snack', cuisine: 'Italian', source: 'imported', sourceName: 'September Recipe Book', bookMacros: { kcal: 283, p: 25, c: 12, f: 15 }, name: 'Layered pizza dip with wrap chips', mins: 25,
     items: [['cottageOriginal', 50, 'p'], ['pizzaSauce', 38, 'v'], ['mozzarella', 25, 'f'], ['pepperoni', 20, 'v'], ['hpWrap', 35, 'c']],
     extras: 'Dried Italian herbs, olive oil spray',
     steps: ['Layer cottage cheese, pizza sauce, mozzarella and pepperoni in a small baking dish; sprinkle with herbs.', 'Bake at 200°C for 12–15 minutes until bubbling.', 'Cut the wrap into wedges, spray and air-fry at 180°C for 5–7 minutes until crisp.', 'Serve the dip with the chips.'],

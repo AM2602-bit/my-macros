@@ -260,6 +260,7 @@
     return `<details>
       <summary>Ingredients &amp; method</summary>
       <div class="recipe">
+        <p class="origin-note">${esc(originText(recipe))}</p>
         <h4>Ingredients</h4>
         <ul class="ingredients">${ingredients}</ul>
         ${recipe.extras ? `<p class="extras">Plus: ${esc(recipe.extras)}</p>` : ''}
@@ -268,6 +269,14 @@
       </div>
     </details>`;
   }
+
+  // Where a recipe came from: written for the app, or imported from a source.
+  const originLabel = (r) => (r.source === 'imported' ? 'Imported' : 'App created');
+  function originText(r) {
+    if (r.source !== 'imported') return 'Origin: App created recipe';
+    return `Origin: Imported from ${r.sourceName || 'an external source'}${r.bookMacros ? ' · macros as published in the source' : ''}`;
+  }
+  const originBadge = (r) => `<span class="origin-badge ${r.source === 'imported' ? 'imported' : 'app'}">${esc(originLabel(r))}${r.source === 'imported' && r.sourceName ? ' · ' + esc(r.sourceName) : ''}</span>`;
 
   function heartButton(id) {
     const on = isFav(id);
@@ -287,6 +296,7 @@
     return `<article class="card meal" data-slot="${slot.key}">
       <div class="meal-head">
         <div class="meal-slot"><span class="eyebrow">${slot.label}</span><span class="time">${esc(recipe.cuisine)} · ${recipe.mins} min</span></div>
+        ${originBadge(recipe)}
         <div class="meal-title"><h3>${esc(recipe.name)}</h3>
           <div class="title-actions">
             <button class="icon-btn" type="button" data-cart="${slot.key}" aria-label="Add to shopping cart">${ICONS.cart}</button>
@@ -388,7 +398,7 @@
     return `<div class="fav-row${allowed ? '' : ' blocked'}">
       <div class="fav-main">
         <p class="fav-name">${esc(recipe.name)}</p>
-        <p class="fav-meta">${esc(recipe.cuisine)} · ${recipe.mins} min${allowed ? '' : ' · <span class="warn-text">doesn\'t match your current preferences</span>'}</p>
+        <p class="fav-meta">${esc(recipe.cuisine)} · ${recipe.mins} min · ${esc(originLabel(recipe))}${allowed ? '' : ' · <span class="warn-text">doesn\'t match your current preferences</span>'}</p>
         ${fit ? `<div class="chips">${chips(fit.macros)}</div>` : ''}
       </div>
       <div class="fav-actions">${actionsHtml(allowed)}</div>

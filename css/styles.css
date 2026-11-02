@@ -447,3 +447,9 @@ input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focu
 #pw-form { display: grid; gap: 10px; }
 /* Recipe count next to each cuisine */
 .pill small { color: var(--muted); font-weight: 600; margin-left: 2px; }
+
+/* Recipe origin */
+.origin-badge { display: inline-block; margin: 0 0 6px; padding: 2px 8px; border-radius: 99px; font-size: .7rem; font-weight: 700; letter-spacing: .02em; }
+.origin-badge.app { background: var(--brand-soft); color: var(--brand-strong); }
+.origin-badge.imported { background: color-mix(in srgb, var(--fat) 16%, transparent); color: var(--fat); }
+.origin-note { font-size: .8rem; color: var(--muted); margin: 4px 0 10px; }
