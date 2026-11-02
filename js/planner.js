@@ -39,6 +39,13 @@
   // 0.03 keeps daily totals within ~2% of target while letting most recipes rotate in.
   const FIT_TOLERANCE = 0.03;
 
+  // Cuisines users can favour, with recipe counts; 'Everyday' (smoothies, oats, snacks) isn't a cuisine.
+  const CUISINES = (() => {
+    const counts = {};
+    RECIPES.forEach((r) => { if (r.cuisine !== 'Everyday') counts[r.cuisine] = (counts[r.cuisine] || 0) + 1; });
+    return Object.keys(counts).sort().map((name) => ({ name, count: counts[name] }));
+  })();
+
   // Accepts the current shape or the original flat one ({ vegetarian, dairyFree, ... }).
   function normalizePrefs(p) {
     p = p || {};
@@ -48,12 +55,13 @@
         allergies: p.allergies.filter((a) => ALLERGENS.some((x) => x.key === a)),
         likes: (p.likes || []).filter((f) => FOODS[f]),
         dislikes: (p.dislikes || []).filter((f) => FOODS[f]),
+        cuisines: (p.cuisines || []).filter((c) => CUISINES.some((x) => x.name === c)),
       };
     }
     const allergies = [];
     if (p.dairyFree) allergies.push('dairy');
     if (p.glutenFree) allergies.push('gluten');
-    return { diet: { vegetarian: !!p.vegetarian, vegan: !!p.vegan }, allergies, likes: [], dislikes: [] };
+    return { diet: { vegetarian: !!p.vegetarian, vegan: !!p.vegan }, allergies, likes: [], dislikes: [], cuisines: [] };
   }
 
   function blockedFlags(prefs) {
@@ -147,11 +155,11 @@
     return { kcal: targets.kcal * share, p: targets.p * share, c: targets.c * share, f: targets.f * share };
   }
 
-  // Liked ingredients and favourites give a recipe more leeway on fit and a
-  // higher chance of being picked.
+  // Liked ingredients, liked cuisines and favourites give a recipe more leeway
+  // on fit and a higher chance of being picked.
   function preferenceBoost(recipe, prefs, favourites) {
     const liked = new Set(recipe.items.map(([food]) => food).filter((f) => prefs.likes.includes(f))).size;
-    return Math.min(liked, 2) + (favourites.includes(recipe.id) ? 1 : 0);
+    return Math.min(liked, 2) + (favourites.includes(recipe.id) ? 1 : 0) + ((prefs.cuisines || []).includes(recipe.cuisine) ? 1 : 0);
   }
 
   // Pick at random among recipes that fit nearly as well as the best one,
@@ -262,7 +270,7 @@
   }
 
   window.Planner = {
-    SLOTS, FOODS, RECIPES, ALLERGENS,
+    SLOTS, FOODS, RECIPES, ALLERGENS, CUISINES,
     recipeById: (id) => RECIPES.find((r) => r.id === id),
     normalizePrefs, recipeAllowed,
     generateDay, swapMeal, undoSwap, setMeal, fitFor, enforcePrefs,

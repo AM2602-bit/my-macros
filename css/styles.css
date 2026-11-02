@@ -445,3 +445,5 @@ input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focu
 .auth-switch { color: var(--muted); font-size: .92rem; margin: 6px 0; }
 .auth-switch .btn { min-height: 36px; padding: 4px 6px; }
 #pw-form { display: grid; gap: 10px; }
+/* Recipe count next to each cuisine */
+.pill small { color: var(--muted); font-weight: 600; margin-left: 2px; }

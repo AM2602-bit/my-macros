@@ -753,6 +753,9 @@
     $('#allergy-pills').innerHTML = P.ALLERGENS.map((a) =>
       `<label class="pill"><input type="checkbox" data-allergy="${a.key}"${prefs.allergies.includes(a.key) ? ' checked' : ''}><span>${a.label}</span></label>`
     ).join('');
+    $('#cuisine-pills').innerHTML = P.CUISINES.map((c) =>
+      `<label class="pill"><input type="checkbox" data-cuisine="${esc(c.name)}"${prefs.cuisines.includes(c.name) ? ' checked' : ''}><span>${esc(c.name)} <small>${c.count}</small></span></label>`
+    ).join('');
     renderFoods();
   }
 
@@ -800,6 +803,10 @@
     } else if (t.dataset.allergy) {
       const a = t.dataset.allergy;
       prefs.allergies = t.checked ? prefs.allergies.concat(a) : prefs.allergies.filter((x) => x !== a);
+      prefsUpdated();
+    } else if (t.dataset.cuisine) {
+      const c = t.dataset.cuisine;
+      prefs.cuisines = t.checked ? prefs.cuisines.concat(c) : prefs.cuisines.filter((x) => x !== c);
       prefsUpdated();
     }
   });

@@ -296,6 +296,7 @@
           <dl class="kv">
             <dt>Likes</dt><dd>${esc(foodNames(prefs.likes))}</dd>
             <dt>Dislikes</dt><dd>${esc(foodNames(prefs.dislikes))}</dd>
+            <dt>Cuisines</dt><dd>${esc(prefs.cuisines.join(', ') || '–')}</dd>
             <dt>Favourites</dt><dd>${esc(favs.map(recipeName).join(', ') || '–')}</dd>
             <dt>Shopping cart</dt><dd>${cartMeals ? `${cartMeals} meal${cartMeals === 1 ? '' : 's'}` : 'Empty'}</dd>
           </dl>

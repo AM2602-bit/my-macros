@@ -186,6 +186,12 @@ async function load(path, base) {
     await wait(100);
     check('password changed', sam.password === 'newpass123');
 
+    const thai = q('[data-cuisine="Thai"]');
+    check('cuisine pills rendered', !!thai && d.querySelectorAll('[data-cuisine]').length > 10 && !q('[data-cuisine="Everyday"]'));
+    thai.checked = true; thai.dispatchEvent(new Event('change', { bubbles: true }));
+    await wait(1100);
+    check('liked cuisine synced', (DB.user_data.find((r) => r.user_id === sam.id).data.prefs.cuisines || []).includes('Thai'));
+
     q('#btn-signout').click();
     await wait(200);
     check('sign out -> sign-in screen + local data removed', visible('signin') && !localStorage.getItem('mm.data.' + sam.id));
@@ -312,6 +318,7 @@ async function load(path, base) {
     check('admin: self role locked, no delete, no disable', q('#f-account').elements.role.disabled && !q('#btn-delete') && q('#btn-toggle-disabled').disabled);
     // Sam's own data visible
     check('admin: shows user data summary', q('#f-prefs').elements.kcal.value === '2000' && q('#drawer-body').textContent.includes('Favourites'));
+    check('admin: shows liked cuisines', /Cuisines\s*Thai/.test(q('#drawer-body').textContent));
     q('[data-close]').click();
 
     // Admin session separate from app session
