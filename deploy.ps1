@@ -43,7 +43,12 @@ if ($SetupCpanel) {
   # Ctrl+V types a literal control character instead of pasting.
   $raw = (Get-Clipboard -Raw) -replace '\s', ''
   if ($raw -notmatch '^[A-Za-z0-9]{20,}$') {
-    throw 'The clipboard does not contain a cPanel API token. Copy the token in cPanel (Manage API Tokens), then run this again.'
+    # Fall back to a visible prompt, where right-click paste works.
+    $raw = (Read-Host 'Paste your cPanel API token (right-click to paste), then press Enter') -replace '\s', ''
+    Clear-Host
+  }
+  if ($raw -notmatch '^[A-Za-z0-9]{20,}$') {
+    throw 'That does not look like a cPanel API token (it should be a long string of letters and numbers). Nothing was saved.'
   }
   ConvertTo-SecureString $raw -AsPlainText -Force | ConvertFrom-SecureString | Set-Content $tokenPath
   Set-Clipboard -Value ' '
