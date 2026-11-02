@@ -2,9 +2,10 @@
 #
 #   cpanel-git (recommended): cPanel pulls the pushed GitHub commit and copies the
 #     files per .cpanel.yml, all over HTTPS. One-time setup: create the repo in
-#     cPanel -> Git Version Control, create an API token, then run
+#     cPanel -> Git Version Control, create an API token, copy it, then run
 #       powershell -ExecutionPolicy Bypass -File deploy.ps1 -SetupCpanel
-#     to save the token encrypted for your Windows account (deploy.cpanel.secret).
+#     which reads the token from the clipboard and saves it encrypted for your
+#     Windows account (deploy.cpanel.secret).
 #
 #   ftp: uploads over FTPS (FTP with TLS). First run creates deploy.config.json and
 #     asks for the FTP password, saved encrypted (deploy.secret).
@@ -38,10 +39,18 @@ if ($SetupCpanel) {
   foreach ($k in 'cpanelHost', 'cpanelUser', 'repoPath', 'branch', 'siteUrl') {
     if (-not $cfg.$k) { throw "Set ""$k"" in deploy.config.json first." }
   }
-  Read-Host "cPanel API token for $($cfg.cpanelUser)" -AsSecureString | ConvertFrom-SecureString | Set-Content $tokenPath
+  # Read the token from the clipboard: in Windows PowerShell's hidden prompt,
+  # Ctrl+V types a literal control character instead of pasting.
+  $raw = (Get-Clipboard -Raw) -replace '\s', ''
+  if ($raw -notmatch '^[A-Za-z0-9]{20,}$') {
+    throw 'The clipboard does not contain a cPanel API token. Copy the token in cPanel (Manage API Tokens), then run this again.'
+  }
+  ConvertTo-SecureString $raw -AsPlainText -Force | ConvertFrom-SecureString | Set-Content $tokenPath
+  Set-Clipboard -Value ' '
+  $raw = $null
   $cfg | Add-Member -Force -NotePropertyName method -NotePropertyValue 'cpanel-git'
   $cfg | ConvertTo-Json | Set-Content -Encoding utf8 $configPath
-  Write-Host 'Token saved (encrypted) and deploy method set to cpanel-git.'
+  Write-Host 'Token read from clipboard, saved (encrypted), and clipboard cleared. Deploy method set to cpanel-git.'
   exit 0
 }
 
@@ -49,7 +58,8 @@ if ($cfg.method -eq 'cpanel-git') {
   if (-not (Test-Path $tokenPath)) { throw 'No cPanel API token saved. Run: deploy.ps1 -SetupCpanel' }
   [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
   $tok = Get-Content $tokenPath | ConvertTo-SecureString
-  $plain = [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($tok))
+  # Pasting often adds a stray newline or spaces, which are invalid in a header.
+  $plain = ([Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($tok))) -replace '\s', ''
   $headers = @{ Authorization = "cpanel $($cfg.cpanelUser):$plain" }
 
   # cPanel deploys what's on GitHub, so local work must be committed and pushed.
