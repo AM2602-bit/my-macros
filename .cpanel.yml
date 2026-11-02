@@ -1,0 +1,11 @@
+---
+# cPanel Git Version Control deployment: copies the app into the subdomain's
+# document root when you click "Deploy HEAD Commit" (or deploy.ps1 triggers it).
+# Keeps cPanel's own PHP settings block in .htaccess.
+deployment:
+  tasks:
+    - export DEPLOYPATH=$HOME/mymac-ro.nvsolutions.net/
+    - "awk '/# BEGIN cPanel-generated/,/# END cPanel-generated/' ${DEPLOYPATH}.htaccess > $HOME/.mm-cpanel-block 2>/dev/null || true"
+    - /bin/cp -f index.html manifest.webmanifest sw.js .htaccess $DEPLOYPATH
+    - "cat $HOME/.mm-cpanel-block >> ${DEPLOYPATH}.htaccess"
+    - /bin/cp -Rf css js icons admin $DEPLOYPATH

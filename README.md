@@ -53,7 +53,7 @@ Accounts and per-user data use [Supabase](https://supabase.com) (free tier). Unt
    };
    ```
    The anon key is designed to be public, so it's fine in the repo. Never put the **service_role** key in the app.
-6. **Make yourself an admin:** deploy (`deploy.ps1`), create your account in the app, then run this in the SQL Editor with your email:
+6. **Make yourself an admin:** deploy (see Deploying below), create your account in the app, then run this in the SQL Editor with your email:
    ```sql
    update public.profiles set role = 'admin' where email = 'you@example.com';
    ```
@@ -61,6 +61,17 @@ Accounts and per-user data use [Supabase](https://supabase.com) (free tier). Unt
 
 **Emails:** Supabase's built-in email service is limited to a few emails per hour, which is fine for testing. For real users, set up your own SMTP under **Project Settings → Authentication → SMTP Settings**. A mailbox from your cPanel hosting works.
 
+## Deploying
+
+`deploy.ps1` publishes the app to https://mymac-ro.nvsolutions.net. It's set up for **cPanel Git Version Control**, which works entirely over HTTPS:
+
+1. **cPanel → Git Version Control → Create:** clone `https://github.com/AM2602-bit/my-macros.git` into `repositories/my-macros`. cPanel follows [`.cpanel.yml`](.cpanel.yml) to copy the app into the subdomain folder.
+2. **cPanel → Manage API Tokens → Create:** make a token for deploys.
+3. Run `powershell -ExecutionPolicy Bypass -File deploy.ps1 -SetupCpanel` and paste the token. It's saved encrypted for your Windows account only, in `deploy.cpanel.secret`, which git ignores.
+
+After that, every deploy is: commit → `git push` → `deploy.ps1`. The script checks that everything is pushed, tells cPanel to pull and deploy, then confirms the live site has updated. You can also deploy by hand in cPanel: **Git Version Control → Manage → Pull or Deploy → Update from Remote**, then **Deploy HEAD Commit**.
+
+The older FTP method (set `"method": "ftp"` in `deploy.config.json`) needs the host to allow FTP over TLS.
 ## Testing
 
 Run `serve.ps1`, then open http://localhost:8000/tests/accounts-test.html. It runs the main app and the admin app against an in-memory stand-in for Supabase and lists PASS/FAIL for each sign-in, sync and admin flow.
@@ -84,7 +95,8 @@ Run `serve.ps1`, then open http://localhost:8000/tests/accounts-test.html. It ru
 | `supabase/schema.sql` | Tables and row-level security rules to run in Supabase |
 | `supabase/functions/admin-users/` | Edge Function for admin-only account changes |
 | `tests/` | Browser test suite for accounts and the admin app |
-| `deploy.ps1` | FTPS deploy to the web host |
+| `deploy.ps1` | Deploys to the web host (cPanel Git over HTTPS, or FTPS) |
+| `.cpanel.yml` | Tells cPanel which files to copy into the website folder |
 | `serve.ps1` | Local dev server |
 
 ## Adding a recipe

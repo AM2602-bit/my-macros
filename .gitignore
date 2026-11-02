@@ -7,3 +7,4 @@ desktop.ini
 # FTP deploy credentials
 deploy.config.json
 deploy.secret
+deploy.cpanel.secret
