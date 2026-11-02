@@ -27,7 +27,8 @@ try {
       $ext = [IO.Path]::GetExtension($file).ToLower()
       $res.ContentType = if ($types[$ext]) { $types[$ext] } else { 'application/octet-stream' }
       $res.Headers.Add('Cache-Control', 'no-cache')
-      $res.OutputStream.Write($bytes, 0, $bytes.Length)
+      # Browsers sometimes cancel a download midway; don't let that stop the server.
+      try { $res.OutputStream.Write($bytes, 0, $bytes.Length) } catch { }
     } else {
       $res.StatusCode = 404
     }
