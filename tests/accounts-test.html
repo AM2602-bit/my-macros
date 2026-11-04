@@ -207,6 +207,28 @@ async function load(path, base) {
     w = await load('/index.html', '/'); d = w.document; q = (s) => d.querySelector(s);
     await wait(300);
     check('session persists across reload', !q('#view-plan').hidden);
+    // One-tap price capture: arrives via session storage after the URL is read at boot.
+    sessionStorage.setItem('mm.pendingCapture', JSON.stringify({ store: 'coles', name: 'Uncle Tobys Rolled Oats 750g', price: 4.5, was: 6, url: 'https://www.coles.com.au/product/oats-1' }));
+    w = await load('/index.html', '/'); d = w.document; q = (s) => d.querySelector(s);
+    await wait(300);
+    const cf = q('#capture-form');
+    check('capture: confirmation opens with details', q('#sheet').open && !!cf && cf.elements.price.value === '4.5' && cf.elements.special.checked && cf.elements.food.value === 'oats', cf && cf.elements.food.value);
+    check('capture: nothing saved before confirming', !(DB.user_data.find((x) => x.user_id === sam.id).data.prices || {}).oats);
+    cf.requestSubmit();
+    await wait(1100);
+    const oatsPrice = (DB.user_data.find((x) => x.user_id === sam.id).data.prices.oats || {}).coles || {};
+    check('capture: price saved with product and link', oatsPrice.price === 4.5 && oatsPrice.special === true && oatsPrice.product.includes('Oats') && oatsPrice.url.includes('coles.com.au') && !q('#sheet').open);
+    check('capture: pending capture cleared', !sessionStorage.getItem('mm.pendingCapture'));
+    sessionStorage.setItem('mm.pendingCapture', JSON.stringify({ store: 'woolworths', name: 'Mystery <img src=x onerror=alert(1)>', price: null, url: 'javascript:alert(1)' }));
+    w = await load('/index.html', '/'); d = w.document; q = (s) => d.querySelector(s);
+    await wait(300);
+    check('capture: no price asks user to type it; markup is escaped', /type it in/.test(q('#sheet-body').textContent) && !q('#sheet-body img'));
+    q('#capture-form').requestSubmit();
+    await wait(50);
+    check('capture: empty price not saved', q('#sheet').open);
+    q('#sheet-close').click();
+    await wait(50);
+    check('capture: closing discards it', !sessionStorage.getItem('mm.pendingCapture'));
     q('#tabbar [data-view="me"]').click();
     q('#btn-signout').click();
     await wait(200);

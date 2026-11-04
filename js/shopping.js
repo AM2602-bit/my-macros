@@ -42,6 +42,17 @@
     return out;
   }
 
+  // Only https links on the store's own site, since these end up in an href.
+  function safeStoreUrl(store, url) {
+    const domain = { woolworths: 'woolworths.com.au', coles: 'coles.com.au' }[store];
+    try {
+      const u = new URL(url);
+      return u.protocol === 'https:' && (u.hostname === domain || u.hostname.endsWith('.' + domain)) ? u.href : '';
+    } catch (e) {
+      return '';
+    }
+  }
+
   function sanitizePrices(p) {
     const out = {};
     Object.keys(p || {}).forEach((food) => {
@@ -50,7 +61,13 @@
         const v = p[food][s.key];
         if (v && (v.price > 0 || v.special)) {
           out[food] = out[food] || {};
-          out[food][s.key] = { price: v.price > 0 ? v.price : null, special: !!v.special, updated: v.updated || null };
+          out[food][s.key] = {
+            price: v.price > 0 ? v.price : null,
+            special: !!v.special,
+            updated: v.updated || null,
+            product: String(v.product || '').slice(0, 120),
+            url: safeStoreUrl(s.key, v.url),
+          };
         }
       });
     });
@@ -164,7 +181,7 @@
 
   window.Shopping = {
     STORES, PACKS, STALE_DAYS, GROUP_OF,
-    emptyCart, sanitizeCart, sanitizePrices,
+    emptyCart, sanitizeCart, sanitizePrices, safeStoreUrl,
     addMeal, mealCount, aggregate, toBuy, finalize, finalOutOfDate,
     formatQty, daysOld, cheaperStore, compare,
   };

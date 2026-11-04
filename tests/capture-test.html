@@ -1,0 +1,52 @@
+﻿<!doctype html>
+<html><body><pre id="out">running</pre>
+<script src="../js/foods.js"></script>
+<script src="../js/recipes.js"></script>
+<script src="../js/planner.js"></script>
+<script src="../js/packs.js"></script>
+<script src="../js/shopping.js"></script>
+<script src="../js/capture.js"></script>
+<script>
+// Fixtures are hand-written approximations, NOT copies of real store pages,
+// which block automated browsers. Real pages are checked by hand.
+const L = [];
+const check = (n, ok, x) => L.push((ok ? 'PASS ' : 'FAIL ') + n + (x ? '  ' + x : ''));
+const C = PriceCapture;
+const loc = (host) => ({ hostname: host, href: 'https://' + host + '/product/x-123?ref=abc' });
+const doc = (html) => new DOMParser().parseFromString('<html><body>' + html + '</body></html>', 'text/html');
+const ld = (o) => '<script type="application/ld+json">' + JSON.stringify(o) + '<\/script>';
+try {
+  let r = C.extract(doc(ld({ '@type': 'Product', name: 'Test Oats 750g', offers: { price: '4.50' } })), loc('www.woolworths.com.au'));
+  check('JSON-LD product', r.store === 'woolworths' && r.price === 4.5 && r.name === 'Test Oats 750g' && r.url === 'https://www.woolworths.com.au/product/x-123');
+  r = C.extract(doc(ld({ '@graph': [{ '@type': 'WebPage' }, { '@type': ['Product'], name: 'G', offers: [{ price: 7 }] }] })), loc('www.coles.com.au'));
+  check('JSON-LD in @graph with offer array', r.store === 'coles' && r.price === 7);
+  r = C.extract(doc('<script id="__NEXT_DATA__" type="application/json">' + JSON.stringify({ props: { pageProps: { product: { name: 'Milk 2L', pricing: { now: 3.2, was: 4.1 } } } } }) + '<\/script>'), loc('www.coles.com.au'));
+  check('page data with was price', r.price === 3.2 && r.was === 4.1 && r.name === 'Milk 2L');
+  r = C.extract(doc('<main><h1>Chicken Fillets 600g</h1><p>$14.50/ 1kg</p><p>$8.70</p></main>'), loc('www.coles.com.au'));
+  check('visible text skips unit price', r.price === 8.7 && r.name === 'Chicken Fillets 600g', 'price ' + r.price);
+  r = C.extract(doc('<main><h1>Eggs</h1><p>$5.00</p><p>Was $6.50</p></main>'), loc('www.woolworths.com.au'));
+  check('visible text with was price', r.price === 5 && r.was === 6.5);
+  r = C.extract(doc('<main><h1>Unavailable item</h1></main>'), loc('www.coles.com.au'));
+  check('no price found stays empty', r.price === null && r.name === 'Unavailable item');
+  r = C.extract(doc('<h1>x</h1>'), loc('www.example.com'));
+  check('other sites not recognised', r.store === '');
+
+  let p = C.parse(JSON.stringify({ store: 'coles', name: 'Milk', price: 3.2, was: 4.1, url: 'https://www.coles.com.au/product/m' }));
+  check('parse keeps valid capture and flags special', p.price === 3.2 && p.special && p.url.includes('coles.com.au'));
+  check('parse rejects bad JSON and unknown store', C.parse('nope') === null && C.parse('{"store":"aldi"}') === null);
+  p = C.parse(JSON.stringify({ store: 'coles', name: 'x', price: 99999, url: 'javascript:alert(1)' }));
+  check('parse drops silly price and unsafe link', p.price === null && p.url === '');
+  check('fake lookalike domain rejected', Shopping.safeStoreUrl('coles', 'https://coles.com.au.evil.example/x') === '' && Shopping.safeStoreUrl('coles', 'http://www.coles.com.au/x') === '');
+  const san = Shopping.sanitizePrices({ milk: { coles: { price: 3, product: 'Milk', url: 'javascript:alert(1)' } } });
+  check('stored prices keep product, drop unsafe link', san.milk.coles.product === 'Milk' && san.milk.coles.url === '');
+
+  check('guess: oats', C.guessFood('Uncle Tobys Rolled Oats 750g', []) === 'oats', C.guessFood('Uncle Tobys Rolled Oats 750g', []));
+  check('guess: nothing for nonsense', C.guessFood('Zzzz Qqqq', []) === null);
+
+  const url = C.bookmarklet('https://mymac-ro.nvsolutions.net/');
+  check('bookmarklet is one safe URL', url.startsWith('javascript:') && !/[\s'"<>]/.test(url), url.length + ' chars');
+  new Function(decodeURIComponent(url.slice('javascript:'.length)));
+  check('bookmarklet code parses', true);
+} catch (e) { L.push('ERROR ' + e.stack); }
+document.getElementById('out').textContent = L.join('\n');
+</script></body></html>

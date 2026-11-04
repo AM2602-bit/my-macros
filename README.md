@@ -16,7 +16,7 @@ A mobile-first web app. You enter your daily calories, protein, carbs and fat, a
   - Add a meal (cart icon), a whole day, or a favourite to the cart, and set how many times you'll eat each one
   - The shopping list multiplies portions by those counts, combines ingredients shared between meals, sorts them by aisle and rounds up to real pack sizes (`js/packs.js`)
   - Tap **Have it?** for anything already at home, then **Finalise** to get a checklist to tick off as you shop. If the cart changes later, the list offers to update and keeps your ticks
-  - **Woolworths vs Coles:** enter each item's shelf price per pack and tick "On special". You get totals for each store and for buying each item wherever it's cheapest. Prices are remembered and flagged after 7 days, since specials change weekly. Each item links to a search on both stores' sites, and there are links to both specials pages. Neither supermarket offers a public pricing API, so prices are entered by hand rather than fetched live
+  - **Woolworths vs Coles:** enter each item's shelf price per pack and tick "On special". You get totals for each store and for buying each item wherever it's cheapest. Prices are remembered and flagged after 7 days, since specials change weekly. Each item links to a search on both stores' sites, and there are links to both specials pages. Neither supermarket offers a public pricing API, so prices aren't fetched automatically. Type them in, or use **one-tap capture**: a bookmark you tap on a product page you have open. It reads the price in your own browser and opens the app, where you confirm it before it's saved (`js/capture.js`)
 - **Accounts:** email and password sign-in, with self sign-up, forgotten-password emails and password change under Me. Each user's targets, preferences, favourites, plan, shopping list and prices sync to their account across devices. Without accounts configured, everything is saved on the device
 - **Admin app** at `/admin/`: list and search users; create users with a password; set or email-reset passwords; disable or re-enable accounts; promote admins; delete users; view and edit each user's macros, diet and allergies
 - Installs to your phone's home screen (PWA) and works offline
@@ -86,6 +86,7 @@ Run `serve.ps1`, then open http://localhost:8000/tests/accounts-test.html. It ru
 | `js/planner.js` | Recipe selection, portion fitting, swap/undo and the targets calculator |
 | `js/packs.js` | Typical Australian pack sizes and store search terms for each food |
 | `js/shopping.js` | Cart, shopping list totals, pack rounding and the price comparison |
+| `js/capture.js` | One-tap price capture bookmark and checks on what it sends |
 | `js/cloud.js` | Email/password accounts and per-user sync via Supabase |
 | `js/supabase-config.js` | Your Supabase project URL and anon key |
 | `js/vendor/` | Pinned copy of the Supabase JS library (so the app works offline) |

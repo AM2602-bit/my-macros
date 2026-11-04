@@ -1,6 +1,7 @@
 (function () {
   const P = window.Planner;
   const S = window.Shopping;
+  const C = window.PriceCapture;
   const { SLOTS, FOODS } = P;
   const Cloud = window.Cloud;
 
@@ -556,8 +557,9 @@
     return `<div class="price-cell">
       <div class="price-head">
         <span>${store.label}</span>
-        <a href="${S.STORES.find((s) => s.key === store.key).search(S.PACKS[food].search)}" target="_blank" rel="noopener">Search ↗</a>
+        <a href="${S.STORES.find((s) => s.key === store.key).search(S.PACKS[food].search)}" target="_blank" rel="noopener" data-search-food="${food}" data-store="${store.key}">Search ↗</a>
       </div>
+      ${v.product ? `<span class="price-product">${v.url ? `<a href="${esc(v.url)}" target="_blank" rel="noopener">${esc(v.product)} ↗</a>` : esc(v.product)}</span>` : ''}
       <div class="price-input">
         <span>$</span>
         <input type="number" inputmode="decimal" step="0.01" min="0" placeholder="0.00"
@@ -645,6 +647,7 @@
         <button class="btn btn-ghost btn-block" type="button" data-act="edit">Edit list</button>
       </div>
       <div class="card" id="compare-summary">${renderCompareSummary()}</div>
+      ${renderCaptureSetup()}
       <div class="card">${groupRows(items, row)}</div>
       <button class="btn btn-link btn-block" type="button" data-act="clear">Clear cart &amp; start again</button>`;
   }
@@ -661,6 +664,20 @@
     const btn = (attr) => t.closest('[' + attr + ']');
     const entry = (key) => cart.entries.find((x) => x.key === key);
     let b;
+    if ((b = btn('data-search-food'))) {
+      // Lets the capture screen preselect this item when the user comes back.
+      local.set('mm.lastSearch', { food: b.dataset.searchFood, store: b.dataset.store, at: Date.now() });
+      return;
+    }
+    if (btn('data-capture-link')) {
+      e.preventDefault();
+      toast('Drag this button to your bookmarks bar instead of clicking it');
+      return;
+    }
+    if (btn('data-capture-copy')) {
+      copyBookmarklet();
+      return;
+    }
     if ((b = btn('data-inc'))) {
       entry(b.dataset.inc).times++;
     } else if ((b = btn('data-dec'))) {
@@ -720,10 +737,118 @@
     const cur = prices[food][store] || { price: null, special: false };
     prices[food][store] = Object.assign({}, cur, change, { updated: new Date().toISOString() });
     save();
-    $('#compare-summary').innerHTML = renderCompareSummary();
+    const summary = $('#compare-summary');
+    if (summary) summary.innerHTML = renderCompareSummary();
     const badge = document.querySelector(`[data-best-for="${food}"]`);
     if (badge) badge.textContent = bestBadge(food);
   }
+
+  // ---------- One-tap price capture ----------
+  const CAPTURE_KEY = 'mm.pendingCapture';
+  const LAST_SEARCH_MAX_AGE = 30 * 60 * 1000;
+  const session = {
+    get() { try { return sessionStorage.getItem(CAPTURE_KEY); } catch (e) { return null; } },
+    set(v) { try { sessionStorage.setItem(CAPTURE_KEY, v); } catch (e) { /* ignore */ } },
+    clear() { try { sessionStorage.removeItem(CAPTURE_KEY); } catch (e) { /* ignore */ } },
+  };
+  const bookmarkletUrl = () => C.bookmarklet(location.origin + location.pathname);
+
+  function renderCaptureSetup() {
+    return `<details class="card calc capture-setup">
+      <summary>Set up one-tap price capture</summary>
+      <p class="hint">Save prices from a product page you have open, without typing them. Works best in a computer browser.</p>
+      <ol class="steps">
+        <li>Show your bookmarks bar (Ctrl+Shift+B), then drag this button onto it: <a class="btn btn-ghost btn-sm" data-capture-link href="${esc(bookmarkletUrl())}">Save price to My Mac-ro's</a></li>
+        <li>Tap <b>Search ↗</b> on an item below and open the product you buy.</li>
+        <li>Tap the bookmark, check the details and save.</li>
+      </ol>
+      <button class="btn btn-link btn-sm" type="button" data-capture-copy>Can't drag? Copy the bookmark code</button>
+    </details>`;
+  }
+
+  async function copyBookmarklet() {
+    try {
+      await navigator.clipboard.writeText(bookmarkletUrl());
+      toast('Copied. Create a bookmark and paste this as its URL');
+    } catch (e) {
+      toast("Couldn't copy on this device");
+    }
+  }
+
+  function listFoods() {
+    const cart = state.data.cart;
+    return (cart.final && !cart.editing ? cart.final.items : S.toBuy(cart)).map((it) => it.food);
+  }
+
+  function preselectFood(cap, onList) {
+    const last = local.get('mm.lastSearch');
+    if (last && last.store === cap.store && FOODS[last.food] && Date.now() - last.at < LAST_SEARCH_MAX_AGE) return last.food;
+    return C.guessFood(cap.name, onList);
+  }
+
+  function packHint(food) {
+    return food ? `The list assumes ${S.PACKS[food].label}. Check this product is a similar size.` : '';
+  }
+
+  // Waits here until a session exists, so a signed-out user can sign in first.
+  function openPendingCapture() {
+    if (recovering) return;
+    // A second session start (cached, then confirmed) re-renders an open capture.
+    const raw = session.get() || (sheet.open && sheet.dataset.capture) || null;
+    if (!raw) return;
+    session.clear();
+    const cap = C.parse(raw);
+    if (!cap) {
+      toast("That page couldn't be read. Enter the price by hand");
+      return;
+    }
+    const store = S.STORES.find((s) => s.key === cap.store);
+    const onList = listFoods();
+    const chosen = preselectFood(cap, onList);
+    const option = (k) => `<option value="${k}"${k === chosen ? ' selected' : ''}>${esc(FOODS[k].name)}</option>`;
+    const others = Object.keys(FOODS).filter((k) => !onList.includes(k)).sort((a, b) => FOODS[a].name.localeCompare(FOODS[b].name));
+    $('#sheet-title').textContent = `Save ${store.label} price`;
+    $('#sheet-body').innerHTML = `<form id="capture-form" class="capture-form" novalidate>
+      <p class="fav-name">${esc(cap.name || 'Unnamed product')}</p>
+      ${cap.price ? '' : '<p class="hint warn">Couldn\'t read the price from that page. Please type it in.</p>'}
+      <label class="field"><span>Price per pack</span>
+        <div class="price-input"><span>$</span><input type="number" inputmode="decimal" step="0.01" min="0" name="price" value="${cap.price || ''}"></div>
+      </label>
+      <label class="sale"><input type="checkbox" name="special"${cap.special ? ' checked' : ''}> On special</label>
+      <label class="field"><span>Shopping list item</span>
+        <select name="food">
+          <option value=""${chosen ? '' : ' selected'}>Choose an item…</option>
+          ${onList.length ? `<optgroup label="On your list">${onList.map(option).join('')}</optgroup>` : ''}
+          <optgroup label="All ingredients">${others.map(option).join('')}</optgroup>
+        </select>
+      </label>
+      <p class="hint" id="capture-pack">${esc(packHint(chosen))}</p>
+      <button class="btn btn-primary btn-block" type="submit">Save price</button>
+    </form>`;
+    sheet.dataset.capture = raw;
+    if (!sheet.open) sheet.showModal();
+  }
+
+  $('#sheet-body').addEventListener('change', (e) => {
+    if (e.target.name === 'food' && e.target.closest('#capture-form')) $('#capture-pack').textContent = packHint(e.target.value);
+  });
+
+  $('#sheet-body').addEventListener('submit', (e) => {
+    if (e.target.id !== 'capture-form') return;
+    e.preventDefault();
+    const f = e.target.elements;
+    const price = parseFloat(f.price.value);
+    if (!(price > 0)) return toast('Enter the price');
+    if (!f.food.value) return toast('Choose a shopping list item');
+    const cap = C.parse(sheet.dataset.capture);
+    setPrice(f.food.value, cap.store, { price: Math.round(price * 100) / 100, special: f.special.checked, product: cap.name, url: cap.url });
+    const label = S.STORES.find((s) => s.key === cap.store).label;
+    sheet.close();
+    if (state.data.cart.final) show('shop');
+    toast(`${label} price saved for ${FOODS[f.food.value].name}`);
+  });
+
+  sheet.addEventListener('close', () => { delete sheet.dataset.capture; });
 
   // ---------- Me: account & preferences ----------
   function renderAccount() {
@@ -958,6 +1083,7 @@
     } else {
       show(state.data.targets ? 'plan' : 'targets');
     }
+    openPendingCapture();
   }
 
   // Shown on the sign-in screen after we sign someone out (e.g. a disabled account).
@@ -1002,6 +1128,11 @@
   }
 
   // ---------- Boot ----------
+  const captureParam = new URLSearchParams(location.search).get('capture');
+  if (captureParam) {
+    session.set(captureParam);
+    history.replaceState(null, '', location.pathname);
+  }
   if (!Cloud.enabled) {
     startSession(null);
   } else {

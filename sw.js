@@ -1,6 +1,6 @@
 // Offline support: serve the app shell from cache, refresh it in the background.
 // Bump VERSION whenever app files change so phones pick up the update.
-const VERSION = 'mm-v16';
+const VERSION = 'mm-v17';
 const SHELL = [
   './',
   'index.html',
@@ -10,6 +10,7 @@ const SHELL = [
   'js/planner.js',
   'js/packs.js',
   'js/shopping.js',
+  'js/capture.js',
   'js/vendor/supabase-2.45.4.min.js',
   'js/supabase-config.js',
   'js/cloud.js',
@@ -35,7 +36,7 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   // Leave Supabase (accounts and data) traffic and the admin app to the network.
   const url = new URL(event.request.url);
-  if (event.request.method !== 'GET' || url.origin !== location.origin || url.pathname.includes('/admin/')) return;
+  if (event.request.method !== 'GET' || url.origin !== location.origin || url.pathname.includes('/admin/') || url.searchParams.has('capture')) return;
   event.respondWith(
     caches.match(event.request).then((cached) => {
       const network = fetch(event.request)

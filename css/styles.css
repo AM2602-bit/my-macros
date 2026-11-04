@@ -453,3 +453,14 @@ input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focu
 .origin-badge.app { background: var(--brand-soft); color: var(--brand-strong); }
 .origin-badge.imported { background: color-mix(in srgb, var(--fat) 16%, transparent); color: var(--fat); }
 .origin-note { font-size: .8rem; color: var(--muted); margin: 4px 0 10px; }
+/* One-tap price capture */
+.capture-setup { padding: 0 18px; }
+.capture-setup[open] { padding-bottom: 14px; }
+.capture-setup .steps { margin-bottom: 8px; }
+.capture-setup .steps .btn { margin: 6px 0 2px; }
+.capture-form { display: grid; gap: 12px; }
+.capture-form .hint { margin: 0; min-height: 0; }
+.capture-form .hint:empty { display: none; }
+.capture-form .price-input input { width: 100%; padding-left: 22px; }
+.price-product { font-size: .72rem; color: var(--muted); overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.price-product a { color: inherit; }
